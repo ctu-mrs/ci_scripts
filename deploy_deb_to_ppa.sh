@@ -24,13 +24,23 @@ git config user.name github
 mv $ORIGINAL_DIR/../*.deb ./
 mv $ORIGINAL_DIR/../*.ddeb ./
 
-git add -A
-git commit -m "Added new deb packages"
+STATUS=$( git status --porcelain )
 
-# the upstream might have changed in the meantime, try to merge it first
-git fetch
-git merge origin/$BRANCH
+if [ -n $STATUS ]; then
 
-git push
+  git add -A
+  git commit -m "Added new deb packages"
 
-echo "$0: Package deployed"
+  # the upstream might have changed in the meantime, try to merge it first
+  git fetch
+  git merge origin/$BRANCH
+
+  git push
+
+  echo "$0: Package deployed"
+
+else
+
+  echo "$0: Nothing to commit"
+
+fi
