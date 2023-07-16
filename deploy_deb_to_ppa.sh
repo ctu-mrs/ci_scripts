@@ -11,10 +11,12 @@ ORIGINAL_DIR=`pwd`
 
 cd /tmp
 
+BRANCH=master
 git clone https://$PUSH_TOKEN@github.com/ctu-mrs/ppa.git
-git checkout master
 
 cd ppa
+
+git checkout $BRANCH
 
 git config user.email github@github.com
 git config user.name github
@@ -27,7 +29,7 @@ git commit -m "Added new deb packages"
 
 # the upstream might have changed in the meantime, try to merge it first
 git fetch
-git merge origin/master
+git merge origin/$BRANCH
 
 git push
 
