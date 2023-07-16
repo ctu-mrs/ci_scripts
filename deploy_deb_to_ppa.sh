@@ -12,6 +12,7 @@ ORIGINAL_DIR=`pwd`
 cd /tmp
 
 git clone https://$PUSH_TOKEN@github.com/ctu-mrs/ppa.git
+git checkout master
 
 cd ppa
 
@@ -23,6 +24,11 @@ mv $ORIGINAL_DIR/../*.ddeb ./
 
 git add -A
 git commit -m "Added new deb packages"
+
+# the upstream might have changed in the meantime, try to merge it first
+git fetch
+git merge origin/master
+
 git push
 
-echo "$0: package deployed"
+echo "$0: Package deployed"
