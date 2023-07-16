@@ -24,7 +24,9 @@ git config user.name github
 mv $ORIGINAL_DIR/../*.deb ./
 mv $ORIGINAL_DIR/../*.ddeb ./
 
-if [ -n $(git status --porcelain) ]; then
+GIT_STATUS=$(git status --porcelain)
+
+if [ -n "$GIT_STATUS" ]; then
 
   git add -A
   git commit -m "Added new deb packages"
