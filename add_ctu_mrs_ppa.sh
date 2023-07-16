@@ -9,7 +9,7 @@ echo "$0: Adding MRS PPA repository"
 
 curl -s --compressed "https://ctu-mrs.github.io/ppa/ctu-mrs.gpg" | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/ctu-mrs.gpg >/dev/null
 sudo curl -s --compressed -o /etc/apt/sources.list.d/ctu-mrs.list "https://ctu-mrs.github.io/ppa/ctu-mrs.list"
-sudo curl -s --compressed -o /etc/ros/rosdep/sources.list.d/30-ctu-mrs.list "https://ctu-mrs.github.io/ppa/rosdep/30-ctu-mrs.list"
+sudo curl -s --compressed -o /etc/ros/rosdep/sources.list.d/ctu-mrs.list "https://ctu-mrs.github.io/ppa/rosdep/30-ctu-mrs.list"
 sudo apt-get -y update
 
 rosdep update
