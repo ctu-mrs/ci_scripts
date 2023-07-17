@@ -28,6 +28,5 @@ else
   echo "$0: Git tag recognized as '$GIT_TAG', deploying to stable and unstable PPAs"
 
   $MY_PATH/push_to_ppa.sh stable
-  $MY_PATH/push_to_ppa.sh unstable
 
 fi
