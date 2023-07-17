@@ -16,6 +16,9 @@ git clone https://$PUSH_TOKEN@$PPA ppa
 
 cd ppa
 
+# TODO: will need to be reworked when we start building for ARM
+ARCH=amd64
+
 BRANCH=master
 git checkout $BRANCH
 
@@ -27,7 +30,8 @@ if [ "$1" == "unstable" ]; then
   PACKAGE_NAME=$(cat $GITHUB_WORKSPACE/debian/control | grep Package | awk '{print $2}')
   echo "$0: Package name: $PACKAGE_NAME"
 
-  rm $PACKAGE_NAME* || echo "$0: there are no older packages to remove"
+  rm $PACKAGE_NAME_*$ARCH.deb || echo "$0: there are no older packages to remove"
+  rm $PACKAGE_NAME-dbgsym_*$ARCH.deb || echo "$0: there are no older packages to remove"
 
 fi
 
