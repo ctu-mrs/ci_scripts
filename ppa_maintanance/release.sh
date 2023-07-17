@@ -5,7 +5,7 @@ set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
-$LABEL=$1
+LABEL=$1
 
 echo "$RELEASE_KEY" | gpg --import
 
