@@ -17,7 +17,7 @@ cd $GITHUB_WORKSPACE
 
 GIT_TAG=$(git describe --exact-match --tags HEAD || echo "")
 
-if [ GIT_TAG == "" ]; then
+if [ $GIT_TAG == "" ]; then
 
   echo "$0: Git tag not recognized, deploying to unstable PPA"
 
@@ -25,7 +25,7 @@ if [ GIT_TAG == "" ]; then
 
 else
 
-  echo "$0: Git tag recognized as '$GIT_TAG', deploying to stable and unstable PPAs"
+  echo "$0: Git tag recognized as '$GIT_TAG', deploying to stable PPA"
 
   $MY_PATH/push_to_ppa.sh stable
 
