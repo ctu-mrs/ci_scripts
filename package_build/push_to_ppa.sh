@@ -9,8 +9,6 @@ PPA=github.com/ctu-mrs/ppa-$1.git
 
 echo "$0: Deploying the deb package to $PPA"
 
-GIT_TAG=$(cd $GITHUB_WORKSPACE && git describe --exact-match --tags HEAD)
-
 cd /tmp
 rm -rf ppa
 
