@@ -5,38 +5,27 @@ set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
-echo "$0: Deploying the deb package to CTU-MRS PPA"
+PPA=github.com/ctu-mrs/ppa-$1.git
 
-ORIGINAL_DIR=`pwd`
+echo "$0: Deploying the deb package to $PPA"
 
 GIT_TAG=$(git describe --exact-match --tags HEAD)
 
-if [ $? == "0" ]; then
-
-  echo "$0: Git tag recognized as '$GIT_TAG', deploying to stable PPA"
-
-  git clone https://$PUSH_TOKEN@github.com/ctu-mrs/ppa-stable.git ppa
-
-else
-
-  echo "$0: Git tag not recognized, deploying to unstable PPA"
-
-  git clone https://$PUSH_TOKEN@github.com/ctu-mrs/ppa-unstable.git ppa
-
-fi
-
 cd /tmp
+rm -rf ppa
 
-BRANCH=master
+git clone https://$PUSH_TOKEN@$PPA ppa
+
 cd ppa
 
+BRANCH=master
 git checkout $BRANCH
 
 git config user.email github@github.com
 git config user.name github
 
-mv $ORIGINAL_DIR/../*.deb ./
-mv $ORIGINAL_DIR/../*.ddeb ./
+cp $GITHUB_WORKSPACE/../*.deb ./
+cp $GITHUB_WORKSPACE/../*.ddeb ./
 
 GIT_STATUS=$(git status --porcelain)
 
@@ -51,7 +40,7 @@ if [ -n "$GIT_STATUS" ]; then
 
   git push
 
-  echo "$0: Package deployed"
+  echo "$0: Package deployed to $PPA"
 
 else
 
