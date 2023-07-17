@@ -17,7 +17,7 @@ cd $GITHUB_WORKSPACE
 
 GIT_TAG=$(git describe --exact-match --tags HEAD || echo "")
 
-if [ $GIT_TAG == "" ]; then
+if [ -z $GIT_TAG  ]; then
 
   echo "$0: Git tag not recognized, deploying to unstable PPA"
 
