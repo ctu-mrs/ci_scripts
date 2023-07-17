@@ -15,17 +15,17 @@ cd $GITHUB_WORKSPACE
 
 GIT_TAG=$(git describe --exact-match --tags HEAD || echo "")
 
-if [ $GIT_TAG == "" ]; then
-
-  echo "$0: Git tag not recognized, building for/against unstable PPA"
-
-  $MY_PATH/add_ctu_mrs_unstable_ppa.sh
-
-else
+if [ $? == "0" ]; then
 
   echo "$0: Git tag recognized as '$GIT_TAG', building for/against stable PPA"
 
   $MY_PATH/add_ctu_mrs_stable_ppa.sh
+
+else
+
+  echo "$0: Git tag not recognized, building for/against unstable PPA"
+
+  $MY_PATH/add_ctu_mrs_unstable_ppa.sh
 
 fi
 
