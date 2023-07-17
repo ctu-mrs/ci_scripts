@@ -30,8 +30,8 @@ if [ "$1" == "unstable" ]; then
   PACKAGE_NAME=$(cat $GITHUB_WORKSPACE/debian/control | grep Package | awk '{print $2}')
   echo "$0: Package name: $PACKAGE_NAME"
 
-  rm $PACKAGE_NAME_*$ARCH.deb || echo "$0: there are no older packages to remove"
-  rm $PACKAGE_NAME-dbgsym_*$ARCH.deb || echo "$0: there are no older packages to remove"
+  rm $PACKAGE_NAME_*$ARCH.deb || echo "$0: there are no older *.deb packages to remove"
+  rm $PACKAGE_NAME-dbgsym_*$ARCH.ddeb || echo "$0: there are no older *.ddeb packages to remove"
 
 fi
 
