@@ -7,14 +7,16 @@ trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
 echo "$0: Deploying the deb package to CTU-MRS PPA"
 
+# TODO check if we are on a tag
+# git describe --exact-match --tags HEAD
+
 ORIGINAL_DIR=`pwd`
 
 cd /tmp
 
 BRANCH=master
-git clone https://$PUSH_TOKEN@github.com/ctu-mrs/ppa.git
-
-cd ppa
+git clone https://$PUSH_TOKEN@github.com/ctu-mrs/ppa-unstable.git
+cd ppa-unstable
 
 git checkout $BRANCH
 
