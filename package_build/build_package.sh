@@ -11,7 +11,7 @@ trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
 echo "$0: Building the package"
 
-GIT_TAG=$(cd $GITHUB_WORKSPACE && git describe --exact-match --tags HEAD)
+GIT_TAG=$(cd $GITHUB_WORKSPACE && git describe --exact-match --tags HEAD || echo "")
 
 if [ $? == "0" ]; then
 
