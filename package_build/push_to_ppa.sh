@@ -27,7 +27,7 @@ if [ "$1" == "unstable" ]; then
   PACKAGE_NAME=$(cat $GITHUB_WORKSPACE/debian/control | grep Package | awk '{print $2}')
   echo "$0: Package name: $PACKAGE_NAME"
 
-  rm $GITHUB_WORKSPACE/$PACKAGE_NAME*
+  rm $PACKAGE_NAME* || echo "$0: there are no older packages to remove"
 
 fi
 
