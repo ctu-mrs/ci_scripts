@@ -24,7 +24,7 @@ git config user.name github
 
 if [ "$1" == "unstable" ]; then
 
-  PACKAGE_NAME=$(cat $GITHUB_WORKSPACE/debian/control | grep Package | awk '{print \$2}')
+  PACKAGE_NAME=$(cat $GITHUB_WORKSPACE/debian/control | grep Package | awk '{print $2}')
   echo "$0: Package name: $PACKAGE_NAME"
 
   rm $GITHUB_WORKSPACE/$PACKAGE_NAME*
