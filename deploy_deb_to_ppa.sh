@@ -7,16 +7,28 @@ trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
 echo "$0: Deploying the deb package to CTU-MRS PPA"
 
-# TODO check if we are on a tag
-# git describe --exact-match --tags HEAD
-
 ORIGINAL_DIR=`pwd`
+
+GIT_TAG=$(git describe --exact-match --tags HEAD)
+
+if [ $? == "0" ]; then
+
+  echo "$0: Git tag recognized as '$GIT_TAG', deploying to stable PPA"
+
+  git clone https://$PUSH_TOKEN@github.com/ctu-mrs/ppa-stable.git ppa
+
+else
+
+  echo "$0: Git tag not recognized, deploying to unstable PPA"
+
+  git clone https://$PUSH_TOKEN@github.com/ctu-mrs/ppa-unstable.git ppa
+
+fi
 
 cd /tmp
 
 BRANCH=master
-git clone https://$PUSH_TOKEN@github.com/ctu-mrs/ppa-unstable.git
-cd ppa-unstable
+cd ppa
 
 git checkout $BRANCH
 
