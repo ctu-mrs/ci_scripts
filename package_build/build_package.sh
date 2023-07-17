@@ -11,7 +11,7 @@ trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
 echo "$0: Building the package"
 
-GIT_TAG=$(git describe --exact-match --tags HEAD)
+GIT_TAG=$(cd $GITHUB_WORKSPACE && git describe --exact-match --tags HEAD)
 
 if [ $? == "0" ]; then
 
@@ -30,6 +30,8 @@ fi
 sudo apt-get -y install fakeroot dpkg-dev debhelper
 
 sudo pip3 install -U bloom
+
+cd $GITHUB_WORKSPACE
 
 rosdep install -y -v --rosdistro=noetic --from-paths ./
 
