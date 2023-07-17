@@ -13,21 +13,23 @@ echo "$0: Deploying the deb package to CTU-MRS PPA"
 
 ORIGINAL_DIR=`pwd`
 
-GIT_TAG=$(git describe --exact-match --tags HEAD)
+cd $GITHUB_WORKSPACE
+
+GIT_TAG=$(git describe --exact-match --tags HEAD || echo "")
 
 cd /tmp
 
-if [ $? == "0" ]; then
+if [ GIT_TAG == "" ]; then
 
-  echo "$0: Git tag recognized as '$GIT_TAG', deploying to stable and unstable PPAs"
+  echo "$0: Git tag not recognized, deploying to unstable PPA"
 
-  $MY_PATH/push_to_ppa.sh stable
   $MY_PATH/push_to_ppa.sh unstable
 
 else
 
-  echo "$0: Git tag not recognized, deploying to unstable PPA"
+  echo "$0: Git tag recognized as '$GIT_TAG', deploying to stable and unstable PPAs"
 
+  $MY_PATH/push_to_ppa.sh stable
   $MY_PATH/push_to_ppa.sh unstable
 
 fi
