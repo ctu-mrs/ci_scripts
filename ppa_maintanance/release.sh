@@ -13,7 +13,8 @@ sudo apt -y update
 sudo apt -y install dpkg-dev # needed for dpng-scanpackages
 sudo apt -y install apt-utils # needed for apt-ftparchive
 
-mv .master/resources/* ./
+mv .debs/*.deb ./
+mv .debs/*.ddeb ./
 
 # Packages & Packages.gz
 dpkg-scanpackages --multiversion . > Packages
