@@ -5,7 +5,8 @@ set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
-PPA=github.com/ctu-mrs/ppa-$1
+PPA=$1
+BRANCH=$2
 
 cd /tmp
 
@@ -15,9 +16,9 @@ cd repo
 git config user.email github@github.com
 git config user.name github
 
-git checkout master
-git checkout --orphan new_master
+git checkout $BRANCH
+git checkout --orphan temp
 git commit -m "Updated packages (squashed)"
-git push origin new_master:master --force
+git push origin temp:$BRANCH --force
 
-echo "$0: Master squashed"
+echo "$0: $BRANCH squashed"
