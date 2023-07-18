@@ -19,7 +19,7 @@ cd ppa
 # TODO: will need to be reworked when we start building for ARM
 ARCH=amd64
 
-BRANCH=master
+BRANCH=debs
 git checkout $BRANCH
 
 git config user.email github@github.com
