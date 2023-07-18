@@ -37,8 +37,24 @@ cd $GITHUB_WORKSPACE
 
 rosdep install -y -v --rosdistro=noetic --from-paths ./
 
-bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic
+# bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic
+# fakeroot debian/rules binary
 
-fakeroot debian/rules binary
+PACKAGES=$( bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic | tee )
+
+PACKAGES=$(echo "$PACKAGES" | grep -e "Expanding.*rules")
+
+MY_PATH=`pwd`
+
+for ONE_LINE in "$PACKAGES"; do
+
+  RELATIVE_PKG_PATH="$(echo "$ONE_LINE" | awk '{print $2}' | sed s/\'//g | sed -e 's/\/debian\/rules.em//g' )"
+
+  cd $MY_PATH/$RELATIVE_PKG_PATH
+  echo "$0: calling build on $RELATIVE_PKG_PATH"
+
+  fakeroot debian/rules binary
+
+done
 
 echo "$0: Build finished"

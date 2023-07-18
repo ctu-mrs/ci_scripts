@@ -25,18 +25,30 @@ git checkout $BRANCH
 git config user.email github@github.com
 git config user.name github
 
-if [ "$1" == "unstable" ]; then
+PACKAGES=$( cd $GITHUB_WORKSPACE && bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic )
 
-  PACKAGE_NAME=$(cat $GITHUB_WORKSPACE/debian/control | grep Package | awk '{print $2}')
-  echo "$0: Package name: $PACKAGE_NAME"
+PACKAGES=$(echo "$PACKAGES" | grep -e "Expanding.*rules")
 
-  rm "$PACKAGE_NAME"_*"$ARCH".deb || echo "$0: there are no older *.deb packages to remove"
-  rm "$PACKAGE_NAME"-dbgsym_*"$ARCH".ddeb || echo "$0: there are no older *.ddeb packages to remove"
+MY_PATH=`pwd`
 
-fi
+for ONE_LINE in "$PACKAGES"; do
 
-cp $GITHUB_WORKSPACE/../*.deb ./
-cp $GITHUB_WORKSPACE/../*.ddeb ./
+  RELATIVE_PKG_PATH="$(echo "$ONE_LINE" | awk '{print $2}' | sed s/\'//g | sed -e 's/\/debian\/rules.em//g' )"
+
+  if [ "$1" == "unstable" ]; then
+
+    PACKAGE_NAME=$(cat $GITHUB_WORKSPACE/$RELATIVE_PKG_PATH/debian/control | grep Package | awk '{print $2}')
+    echo "$0: Package name: $PACKAGE_NAME"
+
+    rm "$PACKAGE_NAME"_*"$ARCH".deb || echo "$0: there are no older *.deb packages to remove"
+    rm "$PACKAGE_NAME"-dbgsym_*"$ARCH".ddeb || echo "$0: there are no older *.ddeb packages to remove"
+
+  fi
+
+  cp $GITHUB_WORKSPACE/$RELATIVE_PKG_PATH/../*.deb ./
+  cp $GITHUB_WORKSPACE/$RELATIVE_PKG_PATH/../*.ddeb ./
+
+done
 
 GIT_STATUS=$(git status --porcelain)
 
