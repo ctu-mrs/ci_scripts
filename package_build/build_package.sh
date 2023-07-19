@@ -50,8 +50,8 @@ for ONE_LINE in "$PACKAGES"; do
 
   RELATIVE_PKG_PATH="$(echo "$ONE_LINE" | awk '{print $2}' | sed s/\'//g | sed -e 's/\/debian\/rules.em//g' )"
 
-  cd $MY_PATH/$RELATIVE_PKG_PATH
   echo "$0: calling build on $RELATIVE_PKG_PATH"
+  cd $MY_PATH/$RELATIVE_PKG_PATH
 
   fakeroot debian/rules binary
 
