@@ -33,7 +33,7 @@ MY_PATH=`pwd`
 
 for ONE_LINE in "$PACKAGES"; do
 
-  RELATIVE_PKG_PATH="$(echo "$ONE_LINE" | awk '{print $2}' | sed s/\'//g | sed -e 's/\/debian\/rules.em//g' )"
+  RELATIVE_PKG_PATH="$(echo "$ONE_LINE" | awk '{print $2}' | sed s/\'//g | sed -e 's/\/*debian\/rules.em//g' )"
 
   if [ "$1" == "unstable" ]; then
 
