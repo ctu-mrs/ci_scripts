@@ -18,12 +18,14 @@ if [ "$MODE" == "from-master-branch" ]; then
 
   mv .debs/*.ddeb ./
   mv .debs/*.deb ./
-  mv resources/* ./
+  mv resources/apt/* ./
+  mv resources/ros/* ./
   rm -rf resources
 
 elif [ "$MODE" == "from-debs-branch" ]; then
 
-  mv .master/resources/* ./
+  mv .master/resources/apt/* ./
+  mv .master/resources/ros/* ./
 
 else
 
