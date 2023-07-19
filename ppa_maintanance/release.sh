@@ -6,6 +6,7 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
 LABEL=$1
+MODE=$2
 
 echo "$RELEASE_KEY" | gpg --import
 
@@ -13,7 +14,20 @@ sudo apt -y update
 sudo apt -y install dpkg-dev # needed for dpng-scanpackages
 sudo apt -y install apt-utils # needed for apt-ftparchive
 
-mv .master/resources/* ./
+if [ "$MODE" == "from-master-branch" ]; then
+
+  mv .master/resources/* ./
+
+elif [ "$MODE" == "from-debs-branch" ]; then
+
+  mv .debs/*.ddeb ./
+  mv .debs/*.deb ./
+
+else
+
+  echo "$0: Please select a mode, {from-master-branch, from-debs-branch}"
+
+fi
 
 # Packages & Packages.gz
 dpkg-scanpackages --multiversion . > Packages
