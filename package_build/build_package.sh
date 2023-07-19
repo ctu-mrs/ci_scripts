@@ -48,6 +48,8 @@ MY_PATH=`pwd`
 
 for ONE_LINE in "$PACKAGES"; do
 
+  echo "$0: Going to build a package related to '$ONE_LINE'"
+
   RELATIVE_PKG_PATH="$(echo "$ONE_LINE" | awk '{print $2}' | sed s/\'//g | sed -e 's/\/debian\/rules.em//g' )"
 
   echo "$0: calling build on $RELATIVE_PKG_PATH"
