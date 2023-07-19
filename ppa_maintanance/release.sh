@@ -16,12 +16,12 @@ sudo apt -y install apt-utils # needed for apt-ftparchive
 
 if [ "$MODE" == "from-master-branch" ]; then
 
-  mv .master/resources/* ./
+  mv .debs/*.ddeb ./
+  mv .debs/*.deb ./
 
 elif [ "$MODE" == "from-debs-branch" ]; then
 
-  mv .debs/*.ddeb ./
-  mv .debs/*.deb ./
+  mv .master/resources/* ./
 
 else
 
