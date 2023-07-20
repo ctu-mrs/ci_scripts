@@ -16,7 +16,7 @@ sudo apt -y install apt-utils # needed for apt-ftparchive
 
 if [ "$MODE" == "from-master-branch" ]; then
 
-  mv .debs/*.ddeb ./
+  # mv .debs/*.ddeb ./
   mv .debs/*.deb ./
   mv resources/apt/* ./
   mv resources/rosdep/* ./
