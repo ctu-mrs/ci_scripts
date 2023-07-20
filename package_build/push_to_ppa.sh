@@ -46,7 +46,7 @@ for ONE_LINE in "$PACKAGES"; do
   fi
 
   cp $GITHUB_WORKSPACE/$RELATIVE_PKG_PATH/../*.deb ./
-  cp $GITHUB_WORKSPACE/$RELATIVE_PKG_PATH/../*.ddeb ./
+  # cp $GITHUB_WORKSPACE/$RELATIVE_PKG_PATH/../*.ddeb ./
 
 done
 
