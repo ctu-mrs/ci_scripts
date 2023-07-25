@@ -42,6 +42,8 @@ for PACKAGE in "$PACKAGES"; do
 
   PACKAGE_PATH=$(echo "$PACKAGE" | sed -e 's/\/package.xml$//g')
 
+  echo "$0: cding to '$GITHUB_WORKSPACE/$PACKAGE_PATH'"
+
   cd $GITHUB_WORKSPACE/$PACKAGE_PATH
 
   rosdep install -y -v --rosdistro=noetic --from-paths ./
