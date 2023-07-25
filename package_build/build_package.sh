@@ -33,6 +33,8 @@ sudo apt-get -y install fakeroot dpkg-dev debhelper
 
 sudo pip3 install -U bloom
 
+mkdir -p /tmp/debs_to_push
+
 cd $GITHUB_WORKSPACE
 
 # find all package.xml files
@@ -55,6 +57,8 @@ for PACKAGE in $PACKAGES; do
   echo "$0: calling build on '$PACKAGE_PATH'"
 
   fakeroot debian/rules binary
+
+  mv ../*.deb /tmp/debs_to_push/
 
 done
 
