@@ -35,25 +35,22 @@ sudo pip3 install -U bloom
 
 cd $GITHUB_WORKSPACE
 
-rosdep install -y -v --rosdistro=noetic --from-paths ./
+# find all package.xml files
+PACKAGES=$(find . -name "package.xml")
 
-# bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic
-# fakeroot debian/rules binary
+for PACKAGE in "$PACKAGES"; do
 
-PACKAGES=$( bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic | tee )
+  PACKAGE_PATH=$(dirname "$PACKAGE")
 
-PACKAGES=$(echo "$PACKAGES" | grep -e "Expanding.*rules")
+  cd $GITHUB_WORKSPACE/$PACKAGE_PATH
 
-MY_PATH=`pwd`
+  rosdep install -y -v --rosdistro=noetic --from-paths ./
 
-for ONE_LINE in "$PACKAGES"; do
+  echo "$0: Running bloom on a package in '$PACKAGE_PATH'"
 
-  echo "$0: Going to build a package related to '$ONE_LINE'"
+  bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic
 
-  RELATIVE_PKG_PATH="$(echo "$ONE_LINE" | awk '{print $2}' | sed s/\'//g | sed -e 's/\/*debian\/rules.em//g' )"
-
-  echo "$0: calling build on $RELATIVE_PKG_PATH"
-  cd $MY_PATH/$RELATIVE_PKG_PATH
+  echo "$0: calling build on '$PACKAGE_PATH'"
 
   fakeroot debian/rules binary
 
