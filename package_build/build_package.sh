@@ -44,6 +44,8 @@ for PACKAGE in $PACKAGES; do
 
   PACKAGE_PATH=$(echo "$PACKAGE" | sed -e 's/\/package.xml$//g')
 
+  [ -e $PACKAGE_PATH/CATKIN_IGNORE ] && continue
+
   echo "$0: cding to '$GITHUB_WORKSPACE/$PACKAGE_PATH'"
 
   cd $GITHUB_WORKSPACE/$PACKAGE_PATH
