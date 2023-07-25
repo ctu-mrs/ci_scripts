@@ -40,7 +40,7 @@ PACKAGES=$(find . -name "package.xml")
 
 for PACKAGE in "$PACKAGES"; do
 
-  PACKAGE_PATH=$(dirname "$PACKAGE")
+  PACKAGE_PATH=$(echo "$PACKAGE" | sed -e 's/\/package.xml$//g')
 
   cd $GITHUB_WORKSPACE/$PACKAGE_PATH
 
