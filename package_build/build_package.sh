@@ -38,7 +38,7 @@ cd $GITHUB_WORKSPACE
 # find all package.xml files
 PACKAGES=$(find . -name "package.xml")
 
-for PACKAGE in "$PACKAGES"; do
+for PACKAGE in $PACKAGES; do
 
   PACKAGE_PATH=$(echo "$PACKAGE" | sed -e 's/\/package.xml$//g')
 
