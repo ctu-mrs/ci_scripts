@@ -44,7 +44,30 @@ for PACKAGE in $PACKAGES; do
 
   PACKAGE_PATH=$(echo "$PACKAGE" | sed -e 's/\/package.xml$//g')
 
+  ## don't run if CATKIN_IGNORE is present
+
   [ -e $PACKAGE_PATH/CATKIN_IGNORE ] && continue
+
+  ## don't run for nested packages
+
+  NESTED=false
+
+  for PACKAGE2 in $PACKAGES; do
+
+    PACKAGE2_PATH=$(echo "$PACKAGE2" | sed -e 's/\/package.xml$//g')
+
+    [[ "$PACKAGE" == "$PACKAGE2" ]] && continue
+
+    if [[ $PACKAGE_PATH == $PACKAGE2_PATH* ]]; then
+
+      NESTED=true
+      break
+
+    fi
+
+  done
+
+  $NESTED && continue
 
   echo "$0: cding to '$GITHUB_WORKSPACE/$PACKAGE_PATH'"
 
