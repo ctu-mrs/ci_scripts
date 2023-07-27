@@ -31,6 +31,8 @@ fi
 
 sudo apt-get -y install fakeroot dpkg-dev debhelper
 
+git submodule update --init --recursive
+
 sudo pip3 install -U bloom
 
 mkdir -p /tmp/debs_to_push
