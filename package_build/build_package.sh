@@ -9,9 +9,18 @@ set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
+PACKAGE_FOLDER=$1
+ARTIFACTS_FOLDER=$2
+
+echo "$0: building packages from '$PACKAGE_FOLDER' into '$ARTIFACTS_FOLDER'"
+
+mkdir -p $ARTIFACTS_FOLDER
+
+$MY_PATH/install_ros.sh
+
 echo "$0: Building the package"
 
-cd $GITHUB_WORKSPACE
+cd $PACKAGE_FOLDER
 
 GIT_TAG=$(git describe --exact-match --tags HEAD || echo "")
 
@@ -31,13 +40,9 @@ fi
 
 sudo apt-get -y install fakeroot dpkg-dev debhelper
 
-git submodule update --init --recursive
-
 sudo pip3 install -U bloom
 
-mkdir -p /tmp/debs_to_push
-
-cd $GITHUB_WORKSPACE
+cd $PACKAGE_FOLDER
 
 # find all package.xml files
 PACKAGES=$(find . -name "package.xml")
@@ -71,9 +76,9 @@ for PACKAGE in $PACKAGES; do
 
   $NESTED && continue
 
-  echo "$0: cding to '$GITHUB_WORKSPACE/$PACKAGE_PATH'"
+  echo "$0: cding to '$PACKAGE_FOLDER/$PACKAGE_PATH'"
 
-  cd $GITHUB_WORKSPACE/$PACKAGE_PATH
+  cd $PACKAGE_FOLDER/$PACKAGE_PATH
 
   rosdep install -y -v --rosdistro=noetic --from-paths ./
 
@@ -85,7 +90,9 @@ for PACKAGE in $PACKAGES; do
 
   fakeroot debian/rules binary
 
-  mv ../*.deb /tmp/debs_to_push/
+  echo "$0: finished building '$PACKAGE'"
+
+  mv ../*.deb $ARTIFACTS_FOLDER
 
 done
 
