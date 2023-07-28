@@ -19,7 +19,6 @@ if [ "$MODE" == "from-master-branch" ]; then
   # mv .debs/*.ddeb ./
   mv .debs/*.deb ./
   mv .debs/*.yaml ./
-  mv .debs/*.yml ./
   mv resources/apt/* ./
   mv resources/rosdep/* ./
   rm -rf resources
