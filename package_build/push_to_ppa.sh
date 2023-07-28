@@ -44,6 +44,8 @@ for FILE in `ls $FROM_FOLDER | grep -e ".deb$"`; do
 
 done
 
+cp $FROM_FOLDER/*.yaml ./
+
 GIT_STATUS=$(git status --porcelain)
 
 if [ -n "$GIT_STATUS" ]; then
