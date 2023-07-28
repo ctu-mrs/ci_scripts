@@ -6,6 +6,8 @@ on:
       PUSH_TOKEN:
         required: true
 
+  workflow_dispatch:
+
 jobs:
 
   build_amd64:
