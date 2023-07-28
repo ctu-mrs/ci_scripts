@@ -84,11 +84,12 @@ for PACKAGE in $PACKAGES; do
 
   echo "$0: Running bloom on a package in '$PACKAGE_PATH'"
 
+  export DEB_BUILD_OPTIONS="parallel=`nproc`"
   bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic
 
   echo "$0: calling build on '$PACKAGE_PATH'"
 
-  fakeroot debian/rules binary
+  fakeroot debian/rules "binary --parallel"
 
   echo "$0: finished building '$PACKAGE'"
 
