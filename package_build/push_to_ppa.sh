@@ -10,6 +10,12 @@ FROM_FOLDER=$2
 
 echo "$0: Deploying debs from $2 package to $PPA"
 
+echo ""
+echo "$0: The build artifacts are:"
+echo ""
+ls $FROM_FOLDER
+echo ""
+
 cd /tmp
 rm -rf ppa
 
