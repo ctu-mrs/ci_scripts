@@ -81,6 +81,8 @@ for PACKAGE in $BUILD_ORDER; do
 
   rosdep install -y -v --rosdistro=noetic --from-paths ./
 
+  source /opt/ros/noetic/setup.bash
+
   echo "$0: Running bloom on a package in '$PKG_PATH'"
 
   export DEB_BUILD_OPTIONS="parallel=`nproc`"
