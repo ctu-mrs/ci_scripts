@@ -78,7 +78,7 @@ for PACKAGE in $BUILD_ORDER; do
 
   echo "$0: finished building '$PACKAGE'"
 
-  sudo apt-get -y install ../*.deb
+  sudo apt-get -y install --allow-downgrades ../*.deb
   DEB_NAME=$(dpkg --field ../*.deb | grep Package | awk '{print $2}')
   mv ../*.deb $ARTIFACTS_FOLDER
 
