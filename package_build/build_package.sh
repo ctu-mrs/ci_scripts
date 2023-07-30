@@ -59,7 +59,7 @@ ln -s $PACKAGE_FOLDER $WORKSPACE/src
 BUILD_ORDER=$(catkin list -u)
 
 echo ""
-echo "$0: catking reported following topological build order:"
+echo "$0: catkin reported following topological build order:"
 echo "$BUILD_ORDER"
 echo ""
 
