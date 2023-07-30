@@ -13,6 +13,9 @@ PACKAGE_FOLDER=$1
 ARTIFACTS_FOLDER=$2
 WORKSPACE=/tmp/workspace
 
+ROSDEP_FILE=$ARTIFACTS_FOLDER/generated.yaml
+sudo rm -rf $ROSDEP_FILE
+
 echo "$0: building packages from '$PACKAGE_FOLDER' into '$ARTIFACTS_FOLDER'"
 
 mkdir -p $ARTIFACTS_FOLDER
@@ -46,9 +49,6 @@ echo ""
 echo "$0: catkin reported following topological build order:"
 echo "$BUILD_ORDER"
 echo ""
-
-ROSDEP_FILE=$ARTIFACTS_FOLDER/generated.yaml
-touch $ROSDEP_FILE
 
 echo "yaml file://$ROSDEP_FILE" | sudo tee /etc/ros/rosdep/sources.list.d/temp.list
 
