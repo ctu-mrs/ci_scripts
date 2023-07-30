@@ -9,30 +9,28 @@ set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
-echo "$0: Pes Steka"
-
 PACKAGE_FOLDER=$1
 ARTIFACTS_FOLDER=$2
 WORKSPACE=/tmp/workspace
 
-[ -d $WORKSPACE ] && rm -rf $WORKSPACE
-mkdir -p $WORKSPACE
-
 echo "$0: building packages from '$PACKAGE_FOLDER' into '$ARTIFACTS_FOLDER'"
+
+mkdir -p $ARTIFACTS_FOLDER
+
+$MY_PATH/install_ros.sh
 
 # dependencies need for build the deb package
 sudo apt-get -y install ros-noetic-catkin python3-catkin-tools
 sudo apt-get -y install fakeroot dpkg-dev debhelper
 sudo pip3 install -U bloom
 
+[ -d $WORKSPACE ] && rm -rf $WORKSPACE
+mkdir -p $WORKSPACE
+
 cd $WORKSPACE
 mkdir src
 source /opt/ros/noetic/setup.bash
 catkin init
-
-mkdir -p $ARTIFACTS_FOLDER
-
-$MY_PATH/install_ros.sh
 
 echo "$0: Building the package"
 
