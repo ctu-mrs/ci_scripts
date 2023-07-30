@@ -11,8 +11,22 @@ trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
 PACKAGE_FOLDER=$1
 ARTIFACTS_FOLDER=$2
+WORKSPACE=/tmp/workspace
+
+[ -d $WORKSPACE ] && rm -rf $WORKSPACE
+mkdir -p $WORKSPACE
 
 echo "$0: building packages from '$PACKAGE_FOLDER' into '$ARTIFACTS_FOLDER'"
+
+# dependencies need for build the deb package
+sudo apt-get -y install ros-noetic-catkin python3-catkin-tools
+sudo apt-get -y install fakeroot dpkg-dev debhelper
+sudo pip3 install -U bloom
+
+cd $WORKSPACE
+mkdir src
+source /opt/ros/noetic/setup.bash
+catkin init
 
 mkdir -p $ARTIFACTS_FOLDER
 
@@ -38,62 +52,57 @@ else
 
 fi
 
-sudo apt-get -y install fakeroot dpkg-dev debhelper
-
-sudo pip3 install -U bloom
-
 cd $PACKAGE_FOLDER
 
-# find all package.xml files
-PACKAGES=$(find . -name "package.xml")
+ln -s $PACKAGE_FOLDER $WORKSPACE/src
 
-for PACKAGE in $PACKAGES; do
+BUILD_ORDER=$(catkin list -u)
 
-  PACKAGE_PATH=$(echo "$PACKAGE" | sed -e 's/\/package.xml$//g')
+echo ""
+echo "$0: catking reported following topological build order:"
+echo "$BUILD_ORDER"
+echo ""
+
+ROSDEP_FILE=$ARTIFACTS_FOLDER/generated.yaml
+touch $ROSDEP_FILE
+
+echo "yaml file://$ROSDEP_FILE" | sudo tee /etc/ros/rosdep/sources.list.d/temp.list
+
+for PACKAGE in $BUILD_ORDER; do
+
+  PKG_PATH=$(catkin locate $PACKAGE)
+
+  echo "$0: cding to '$PKG_PATH'"
+  cd $PKG_PATH
 
   ## don't run if CATKIN_IGNORE is present
 
-  [ -e $PACKAGE_PATH/CATKIN_IGNORE ] && continue
-
-  ## don't run for nested packages
-
-  NESTED=false
-
-  for PACKAGE2 in $PACKAGES; do
-
-    PACKAGE2_PATH=$(echo "$PACKAGE2" | sed -e 's/\/package.xml$//g')
-
-    [[ "$PACKAGE" == "$PACKAGE2" ]] && continue
-
-    if [[ $PACKAGE_PATH == $PACKAGE2_PATH* ]]; then
-
-      NESTED=true
-      break
-
-    fi
-
-  done
-
-  $NESTED && continue
-
-  echo "$0: cding to '$PACKAGE_FOLDER/$PACKAGE_PATH'"
-
-  cd $PACKAGE_FOLDER/$PACKAGE_PATH
+  [ -e $PKG_PATH/CATKIN_IGNORE ] && continue
 
   rosdep install -y -v --rosdistro=noetic --from-paths ./
 
-  echo "$0: Running bloom on a package in '$PACKAGE_PATH'"
+  echo "$0: Running bloom on a package in '$PKG_PATH'"
 
   export DEB_BUILD_OPTIONS="parallel=`nproc`"
   bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic
 
-  echo "$0: calling build on '$PACKAGE_PATH'"
+  echo "$0: calling build on '$PKG_PATH'"
 
   fakeroot debian/rules "binary --parallel"
 
   echo "$0: finished building '$PACKAGE'"
 
+  sudo apt-get -y install ../*.deb
+  DEB_NAME=$(dpkg --field ../*.deb | grep Package | awk '{print $2}')
   mv ../*.deb $ARTIFACTS_FOLDER
+
+  echo "$PACKAGE:
+  ubuntu: [$DEB_NAME]
+" >> $ARTIFACTS_FOLDER/generated.yaml
+
+  rosdep update
+
+  source /opt/ros/noetic/setup.bash
 
 done
 
