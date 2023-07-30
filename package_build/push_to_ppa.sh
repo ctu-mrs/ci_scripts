@@ -29,7 +29,9 @@ git checkout $BRANCH
 git config user.email github@github.com
 git config user.name github
 
-# copy the deb files
+echo "$0: moving the .deb files"
+
+# move the deb files
 for FILE in `ls $FROM_FOLDER | grep -e ".deb$"`; do
 
   FILE_PATH=$FROM_FOLDER/$FILE
@@ -46,11 +48,13 @@ for FILE in `ls $FROM_FOLDER | grep -e ".deb$"`; do
 
   fi
 
-  cp $FILE_PATH ./
+  mv $FILE_PATH ./
 
 done
 
-cp $FROM_FOLDER/*.yaml ./
+# copy any other stuff that were generated
+echo "$0: moving other files"
+mv $FROM_FOLDER/* ./ || echo "$0: no more stuff to move"
 
 GIT_STATUS=$(git status --porcelain)
 
