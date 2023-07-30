@@ -13,7 +13,7 @@ PACKAGE_FOLDER=$1
 ARTIFACTS_FOLDER=$2
 WORKSPACE=/tmp/workspace
 
-ROSDEP_FILE=$ARTIFACTS_FOLDER/generated.yaml
+ROSDEP_FILE=/tmp/generated.yaml
 sudo rm -rf $ROSDEP_FILE
 
 echo "$0: building packages from '$PACKAGE_FOLDER' into '$ARTIFACTS_FOLDER'"
