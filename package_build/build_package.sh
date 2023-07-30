@@ -84,7 +84,7 @@ for PACKAGE in $BUILD_ORDER; do
 
   echo "$PACKAGE:
   ubuntu: [$DEB_NAME]
-" >> $ARTIFACTS_FOLDER/generated.yaml
+" >> $ROSDEP_FILE
 
   rosdep update
 
