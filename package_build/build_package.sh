@@ -34,27 +34,11 @@ catkin init
 
 echo "$0: Building the package"
 
-cd $PACKAGE_FOLDER
-
-GIT_TAG=$(git describe --exact-match --tags HEAD || echo "")
-
-if [ -z $GIT_TAG ]; then
-
-  echo "$0: Git tag not recognized, building against unstable PPA"
-
-  $MY_PATH/add_ctu_mrs_unstable_ppa.sh
-
-else
-
-  echo "$0: Git tag recognized as '$GIT_TAG', building against stable PPA"
-
-  $MY_PATH/add_ctu_mrs_stable_ppa.sh
-
-fi
-
-cd $PACKAGE_FOLDER
+$MY_PATH/add_ctu_mrs_unstable_ppa.sh
 
 ln -s $PACKAGE_FOLDER $WORKSPACE/src
+
+cd $WORKSPACE
 
 BUILD_ORDER=$(catkin list -u)
 
