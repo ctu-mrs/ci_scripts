@@ -1,0 +1,102 @@
+name: generic_package_build
+
+on:
+  workflow_call:
+    secrets:
+      PUSH_TOKEN:
+        required: true
+
+  workflow_dispatch:
+
+jobs:
+
+  build_amd64:
+    runs-on: ubuntu-20.04
+
+    env:
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          submodules: 'recursive'
+
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: arm
+          path: .ci_scripts
+          token: ${{ secrets.PUSH_TOKEN }}
+
+      - name: Build
+        run: .ci/build_package.sh $GITH/tmp/artifacts
+
+      - name: Deploy
+        run: .ci_scripts/package_build/push_to_ppa.sh unstable /tmp/artifacts
+
+  build_arm64:
+
+    runs-on: ubuntu-20.04
+    name: Build on ${{ matrix.arch }}
+
+    strategy:
+      matrix:
+        include:
+          - arch: aarch64
+            distro: ubuntu20.04
+
+    env:
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          submodules: 'recursive'
+
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: arm
+          path: .ci_scripts
+          token: ${{ secrets.PUSH_TOKEN }}
+
+      - uses: uraimo/run-on-arch-action@v2
+        name: Build artifact
+
+        id: build
+
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ matrix.distro }}
+
+          githubToken: ${{ github.token }}
+
+          install: |
+            apt-get update -y
+            apt-get install -y sudo git curl
+            echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+
+          # Create an artifacts directory
+          setup: |
+            mkdir -p "/tmp/artifacts"
+            mkdir -p "/tmp/repository"
+
+          # Mount the artifacts directory as /artifacts in the container
+          dockerRunArgs: |
+            --volume "$PWD:/tmp/repository"
+            --volume "/tmp/artifacts:/tmp/artifacts"
+
+          # The shell to run commands with in the container
+          shell: /bin/sh
+
+          # Produce a binary artifact and place it in the mounted volume
+          run: |
+            /tmp/repository/.ci/build_package.sh /tmp/artifacts
+
+      - name: Deploy to unstable
+        run: .ci_scripts/package_build/push_to_ppa.sh unstable /tmp/artifacts
