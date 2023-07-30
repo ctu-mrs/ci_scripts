@@ -9,6 +9,8 @@ set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
+echo "$0: Pes Steka"
+
 PACKAGE_FOLDER=$1
 ARTIFACTS_FOLDER=$2
 WORKSPACE=/tmp/workspace
