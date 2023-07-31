@@ -32,7 +32,9 @@ jobs:
           token: ${{ secrets.PUSH_TOKEN }}
 
       - name: Build
-        run: .ci/build_package.sh $GITH/tmp/artifacts
+        run: |
+          mkdir -p /tmp/artifacts
+          .ci/build_package.sh /tmp/artifacts
 
       - name: Deploy
         run: .ci_scripts/package_build/push_to_ppa.sh unstable /tmp/artifacts
