@@ -23,7 +23,7 @@ sudo apt-get -y install python3-pip
 
 sudo pip3 install -U rosdep
 
-sudo rosdep init
+sudo rosdep init || echo "$0: rosdep already initialized"
 rosdep update
 
 echo "$0: ROS Installed"
