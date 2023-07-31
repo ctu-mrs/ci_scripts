@@ -95,6 +95,7 @@ jobs:
 
           # Produce a binary artifact and place it in the mounted volume
           run: |
+            git config --global --add safe.directory /tmp/repository
             /tmp/repository/.ci/build_package.sh /tmp/artifacts
 
       - name: Deploy to unstable
