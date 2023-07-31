@@ -84,7 +84,6 @@ jobs:
           setup: |
             mkdir -p "/tmp/artifacts"
             mkdir -p "/tmp/repository"
-            git config --global --add safe.directory /tmp/repository
 
           # Mount the artifacts directory as /artifacts in the container
           dockerRunArgs: |
