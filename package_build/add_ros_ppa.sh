@@ -15,8 +15,6 @@ curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo ap
 
 sudo apt-get -y update
 
-source /opt/ros/noetic/setup.bash
-
 sudo apt-get -y install python3-pip
 
 sudo pip3 install -U rosdep
