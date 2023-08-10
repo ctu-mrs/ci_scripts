@@ -20,7 +20,7 @@ echo "$0: building packages from '$PACKAGE_FOLDER' into '$ARTIFACTS_FOLDER'"
 
 mkdir -p $ARTIFACTS_FOLDER
 
-$MY_PATH/install_ros.sh
+$MY_PATH/add_ros_ppa.sh
 
 # dependencies need for build the deb package
 sudo apt-get -y install ros-noetic-catkin python3-catkin-tools
