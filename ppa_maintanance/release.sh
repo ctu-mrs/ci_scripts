@@ -21,12 +21,14 @@ if [ "$MODE" == "from-master-branch" ]; then
   mv .debs/*.yaml ./
   mv resources/apt/* ./
   mv resources/rosdep/* ./
+  mv resources/scripts/* ./
   rm -rf resources
 
 elif [ "$MODE" == "from-debs-branch" ]; then
 
   mv .master/resources/apt/* ./
   mv .master/resources/rosdep/* ./
+  mv .master/resources/scripts/* ./
 
 else
 
