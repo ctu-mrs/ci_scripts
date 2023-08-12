@@ -37,7 +37,7 @@ catkin init
 
 echo "$0: Building the package"
 
-$MY_PATH/add_ctu_mrs_unstable_ppa.sh
+curl https://ctu-mrs.github.io/ppa-unstable/add_ppa.sh | bash
 
 ln -s $PACKAGE_FOLDER $WORKSPACE/src
 
