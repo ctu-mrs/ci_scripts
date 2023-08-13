@@ -20,7 +20,13 @@ echo "$0: building packages from '$PACKAGE_FOLDER' into '$ARTIFACTS_FOLDER'"
 
 mkdir -p $ARTIFACTS_FOLDER
 
-$MY_PATH/add_ros_ppa.sh
+sudo apt-get -y install dpkg-dev
+ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
+
+# we already have a docker image with ros for the ARM build
+if [[ "$ARCH" != "arm64" ]]; then
+  $MY_PATH/add_ros_ppa.sh
+fi
 
 # dependencies need for build the deb package
 sudo apt-get -y install ros-noetic-catkin python3-catkin-tools
