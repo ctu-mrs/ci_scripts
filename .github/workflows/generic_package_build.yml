@@ -43,12 +43,6 @@ jobs:
 
     runs-on: ubuntu-20.04
 
-    strategy:
-      matrix:
-        include:
-          - arch: aarch64
-            distro: noetic
-
     env:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
 
@@ -72,15 +66,10 @@ jobs:
         id: build
 
         with:
-          arch: ${{ matrix.arch }}
-          distro: ${{ matrix.distro }}
+          arch: aarch64
+          distro: noetic
 
           githubToken: ${{ github.token }}
-
-          install: |
-            apt-get update -y
-            apt-get install -y sudo git curl
-            echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 
           # Create an artifacts directory
           setup: |

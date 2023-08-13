@@ -71,11 +71,6 @@ jobs:
 
           githubToken: ${{ github.token }}
 
-          install: |
-            apt-get update -y
-            apt-get install -y sudo git curl
-            echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
-
           # Create an artifacts directory
           setup: |
             mkdir -p "/tmp/artifacts"
