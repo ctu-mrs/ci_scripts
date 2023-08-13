@@ -47,7 +47,7 @@ jobs:
       matrix:
         include:
           - arch: aarch64
-            distro: ubuntu20.04
+            distro: noetic
 
     env:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
@@ -66,7 +66,7 @@ jobs:
           path: .ci_scripts
           token: ${{ secrets.PUSH_TOKEN }}
 
-      - uses: uraimo/run-on-arch-action@v2
+      - uses: ctu-mrs/run-on-arch-action@master
         name: Build artifact
 
         id: build
