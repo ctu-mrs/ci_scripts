@@ -43,12 +43,6 @@ jobs:
 
     runs-on: ubuntu-20.04
 
-    strategy:
-      matrix:
-        include:
-          - arch: aarch64
-            distro: ubuntu20.04
-
     env:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
 
@@ -72,8 +66,8 @@ jobs:
         id: build
 
         with:
-          arch: ${{ matrix.arch }}
-          distro: ${{ matrix.distro }}
+          arch: aarch64
+          distro: noetic
 
           githubToken: ${{ github.token }}
 
