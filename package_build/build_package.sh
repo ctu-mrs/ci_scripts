@@ -80,7 +80,7 @@ for PACKAGE in $BUILD_ORDER; do
 
   epoch=1
   SHA=$(git rev-parse --short HEAD)
-  build_flag=$(date +%Y%m%d.%H%M%S)~git_$SHA
+  build_flag=$(date +%Y%m%d.%H%M%S)~git-$SHA
 
   sed -i "s/(/($epoch:/" ./debian/changelog
   sed -i "s/)/.${build_flag})/" ./debian/changelog
