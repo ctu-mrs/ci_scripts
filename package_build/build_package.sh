@@ -79,7 +79,6 @@ for PACKAGE in $BUILD_ORDER; do
   bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic
 
   epoch=1
-  # SHA=$(git rev-parse --short HEAD)
   build_flag=$(date +%Y%m%d.%H%M%S)
 
   sed -i "s/(/($epoch:/" ./debian/changelog
