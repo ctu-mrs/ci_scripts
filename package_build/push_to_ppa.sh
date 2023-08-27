@@ -44,7 +44,7 @@ for FILE in `ls $FROM_FOLDER | grep -e ".deb$"`; do
   if [[ "$1" == "unstable" ]]; then
 
     # remove old versions of that package
-    rm $PACKAGE_NAME.*$ARCH.*.deb || echo ""
+    rm $PACKAGE_NAME.*$ARCH.deb || echo ""
 
   fi
 
