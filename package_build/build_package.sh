@@ -93,7 +93,7 @@ for PACKAGE in $BUILD_ORDER; do
 
   FIND_METAPACKAGE=$(cat CMakeLists.txt | grep -e "^catkin_metapackage" | wc -l)
 
-  if [ $FIND_METAPACKAGE -ge 1 ]; then
+  if [ $FIND_METAPACKAGE -eq 0 ]; then
     sudo apt-get -y install --allow-downgrades ../*.deb
   fi
 
