@@ -12,6 +12,7 @@ trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 PACKAGE_FOLDER=$1
 ARTIFACTS_FOLDER=$2
 WORKSPACE=/tmp/workspace
+ARTIFACTS_FOLDER=/tmp/artifacts
 
 ROSDEP_FILE=/tmp/generated.yaml
 sudo rm -rf $ROSDEP_FILE
@@ -90,7 +91,12 @@ for PACKAGE in $BUILD_ORDER; do
 
   echo "$0: finished building '$PACKAGE'"
 
-  sudo apt-get -y install --allow-downgrades ../*.deb
+  FIND_METAPACKAGE=$(cat CMakeLists.txt | grep -e "^catkin_metapackage" | wc -l)
+
+  if [ $FIND_METAPACKAGE -ge 1 ]; then
+    sudo apt-get -y install --allow-downgrades ../*.deb
+  fi
+
   DEB_NAME=$(dpkg --field ../*.deb | grep Package | awk '{print $2}')
   mv ../*.deb $ARTIFACTS_FOLDER
 
