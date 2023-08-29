@@ -32,9 +32,7 @@ git config user.name github
 echo "$0: moving the .deb files"
 
 # move the deb files
-for FILE in `ls $FROM_FOLDER | grep -e ".deb$"`; do
-
-  FILE_PATH=$FROM_FOLDER/$FILE
+for FILE_PATH in `find $FROM_FOLDER -type f -name ".deb"`; do
 
   PACKAGE_NAME=$(dpkg --field $FILE_PATH | grep Package | awk '{print $2}')
   ARCH=$(dpkg --field $FILE_PATH | grep Architecture | awk '{print $2}')
