@@ -10,7 +10,7 @@ FROM_FOLDER=$2
 
 echo "$0: Deploying debs from $2 package to $PPA"
 
-ARTIFACTS=$(find $FROM_FOLDER -type f -name ".deb")
+ARTIFACTS=$(find $FROM_FOLDER -type f -name "*.deb")
 
 echo "$0: artifacts are:"
 echo $ARTIFACTS
@@ -31,7 +31,7 @@ git config user.name github
 echo "$0: moving the .deb files"
 
 # move the deb files
-for FILE_PATH in `find $FROM_FOLDER -type f -name ".deb"`; do
+for FILE_PATH in `find $FROM_FOLDER -type f -name "*.deb"`; do
 
   PACKAGE_NAME=$(dpkg --field $FILE_PATH | grep Package | awk '{print $2}')
   ARCH=$(dpkg --field $FILE_PATH | grep Architecture | awk '{print $2}')
