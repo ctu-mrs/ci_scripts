@@ -69,8 +69,6 @@ for PACKAGE in $BUILD_ORDER; do
 
   [ -e $PKG_PATH/CATKIN_IGNORE ] && continue
 
-  FIND_METAPACKAGE=$(cat CMakeLists.txt | grep -e "^catkin_metapackage" | wc -l)
-
   rosdep install -y -v --rosdistro=noetic --dependency-types=build --from-paths ./
 
   source /opt/ros/noetic/setup.bash
