@@ -42,7 +42,7 @@ for FILE_PATH in `find $FROM_FOLDER -type f -name "*.deb"`; do
 
     echo "$0: pushing to 'unstable', going to delete old versions"
 
-    for file_to_delete in `ls | grep -e "$PACKAGE_NAME.*$ARCH.deb$"`; do
+    for file_to_delete in `ls | grep -e "$PACKAGE_NAME_.*_$ARCH.deb$"`; do
 
       echo "$0: deleting '$file_to_delete'"
       rm $file_to_delete
