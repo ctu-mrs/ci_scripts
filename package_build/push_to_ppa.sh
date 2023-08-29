@@ -45,7 +45,7 @@ for FILE in `ls $FROM_FOLDER | grep -e ".deb$"`; do
 
     echo "$0: pushing to 'unstable', going to delete old versions"
 
-    for file_to_delete in `ls | grep -e ".deb$"`; do
+    for file_to_delete in `ls | grep -e "$PACKAGE_NAME.*$ARCH.deb$"`; do
 
       echo "$0: deleting '$file_to_delete'"
       rm $file_to_delete
