@@ -32,8 +32,7 @@ fi
 # dependencies need for build the deb package
 sudo apt-get -y install ros-noetic-catkin python3-catkin-tools
 sudo apt-get -y install fakeroot dpkg-dev debhelper
-sudo pip3 install -U bloom
-sudo apt-get -y install python-is-python3
+sudo pip3 install -U bloom future
 
 [ -d $WORKSPACE ] && rm -rf $WORKSPACE
 mkdir -p $WORKSPACE
