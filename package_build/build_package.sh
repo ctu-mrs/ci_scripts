@@ -33,6 +33,7 @@ fi
 sudo apt-get -y install ros-noetic-catkin python3-catkin-tools
 sudo apt-get -y install fakeroot dpkg-dev debhelper
 sudo pip3 install -U bloom
+sudo apt-get -y install python-is-python3
 
 [ -d $WORKSPACE ] && rm -rf $WORKSPACE
 mkdir -p $WORKSPACE
@@ -71,6 +72,7 @@ for PACKAGE in $BUILD_ORDER; do
   [ -e $PKG_PATH/CATKIN_IGNORE ] && continue
 
   rosdep install -y -v --rosdistro=noetic --dependency-types=build --from-paths ./
+  sudo apt-get -y install python-is-python3
 
   source /opt/ros/noetic/setup.bash
 
