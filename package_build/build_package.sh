@@ -98,7 +98,7 @@ for PACKAGE in $BUILD_ORDER; do
     sudo apt-get -y install --allow-downgrades ../*.deb
   fi
 
-  DEB_NAME=$(dpkg --field ../*.deb | grep Package | awk '{print $2}')
+  DEB_NAME=$(dpkg --field ../*.deb | grep "^Package:" | head -n 1 | awk '{print $2}')
   mv ../*.deb $ARTIFACTS_FOLDER
 
   echo "$PACKAGE:

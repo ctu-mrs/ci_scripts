@@ -12,11 +12,6 @@ echo "$0: Deploying debs from $2 package to $PPA"
 
 ARTIFACTS=$(find $FROM_FOLDER -type f -name "*.deb")
 
-# remove temp files from buildfarm
-[ -e $FROM_FOLDER/idx.txt ] && rm $FROM_FOLDER/idx.txt
-[ -e $FROM_FOLDER/compiled.txt ] && rm $FROM_FOLDER/compiled.txt
-[ -e $FROM_FOLDER/compile_further.txt ] && rm $FROM_FOLDER/compile_further.txt
-
 echo "$0: artifacts are:"
 echo $ARTIFACTS
 
@@ -38,16 +33,28 @@ echo "$0: moving the .deb files"
 # move the deb files
 for FILE_PATH in `find $FROM_FOLDER -type f -name "*.deb"`; do
 
-  PACKAGE_NAME=$(dpkg --field $FILE_PATH | grep "Package:" | head -n 1 | awk '{print $2}')
-  ARCH=$(dpkg --field $FILE_PATH | grep "Architecture:" | head -n 1 | awk '{print $2}')
+  PACKAGE_NAME=$(dpkg --field $FILE_PATH | grep "^Package:" | head -n 1 | awk '{print $2}')
+  ARCH=$(dpkg --field $FILE_PATH | grep "^Architecture:" | head -n 1 | awk '{print $2}')
+  VERSION=$(dpkg --field $FILE_PATH | grep "^Version:" | head -n 1 | awk '{print $2}' | sed -r 's/.*:(.*)-.*/\1/g')
 
-  echo "$0: Pushing the package '$FILE_PATH' to '$PPA', extracted pkg name: '$PACKAGE_NAME', architecture: '$ARCH'"
+  echo "$0: Pushing the package '$FILE_PATH' to '$PPA', extracted pkg name: '$PACKAGE_NAME', architecture: '$ARCH', version: '$VERSION'"
 
   if [[ "$1" == "unstable" ]]; then
 
-    echo "$0: pushing to 'unstable', going to delete old versions"
+    echo "$0: pushing to 'unstable', going to delete all older versions"
 
     for file_to_delete in `ls | grep -e "${PACKAGE_NAME}_.*_${ARCH}.deb$"`; do
+
+      echo "$0: deleting '$file_to_delete'"
+      rm $file_to_delete
+
+    done
+
+  else
+
+    echo "$0: pushing to 'stable', going to delete all older files of the same version"
+
+    for file_to_delete in `ls | grep -e "${PACKAGE_NAME}_${VERSION}-.*_${ARCH}.deb$"`; do
 
       echo "$0: deleting '$file_to_delete'"
       rm $file_to_delete
