@@ -12,6 +12,11 @@ echo "$0: Deploying debs from $2 package to $PPA"
 
 ARTIFACTS=$(find $FROM_FOLDER -type f -name "*.deb")
 
+# remove temp files from buildfarm
+[ -e $FROM_FOLDER/idx.txt ] && rm $FROM_FOLDER/idx.txt
+[ -e $FROM_FOLDER/compiled.txt ] && rm $FROM_FOLDER/compiled.txt
+[ -e $FROM_FOLDER/compile_further.txt ] && rm $FROM_FOLDER/compile_further.txt
+
 echo "$0: artifacts are:"
 echo $ARTIFACTS
 
