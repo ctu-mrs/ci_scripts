@@ -1,0 +1,90 @@
+name: ros_package_build
+
+on:
+  workflow_call:
+    secrets:
+      PUSH_TOKEN:
+        required: true
+
+  workflow_dispatch:
+
+jobs:
+
+  build_amd64:
+    runs-on: ubuntu-20.04
+
+    env:
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: master
+          path: .ci_scripts
+          token: ${{ secrets.PUSH_TOKEN }}
+
+      - name: Build
+        run: |
+          mkdir -p /tmp/artifacts
+          .ci_scripts/package_build/build_package.sh $GITHUB_WORKSPACE /tmp/artifacts
+
+      - name: Deploy
+        run: .ci_scripts/package_build/push_to_ppa.sh unstable /tmp/artifacts
+
+  build_arm64:
+
+    runs-on: ubuntu-20.04
+
+    env:
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: master
+          path: .ci_scripts
+          token: ${{ secrets.PUSH_TOKEN }}
+
+      - uses: ctu-mrs/run-on-arch-action@master
+        name: Build artifact
+
+        id: build
+
+        with:
+          arch: aarch64
+          distro: noetic
+
+          githubToken: ${{ github.token }}
+
+          # Create an artifacts directory
+          setup: |
+            mkdir -p "/tmp/artifacts"
+            mkdir -p "/tmp/repository"
+
+          # Mount the artifacts directory as /artifacts in the container
+          dockerRunArgs: |
+            --volume "$PWD:/tmp/repository"
+            --volume "/tmp/artifacts:/tmp/artifacts"
+
+          # The shell to run commands with in the container
+          shell: /bin/sh
+
+          # Produce a binary artifact and place it in the mounted volume
+          run: |
+            git config --global --add safe.directory /tmp/repository
+            /tmp/repository/.ci_scripts/package_build/build_package.sh /tmp/repository /tmp/artifacts
