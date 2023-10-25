@@ -4,6 +4,9 @@
 MY_PATH=`dirname "$0"`
 MY_PATH=`( cd "$MY_PATH" && pwd )`
 
+# needed for building open_vins
+export ROS_VERSION=1
+
 set -e
 
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
