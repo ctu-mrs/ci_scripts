@@ -36,9 +36,6 @@ jobs:
           mkdir -p /tmp/artifacts
           .ci_scripts/package_build/build_package.sh $GITHUB_WORKSPACE /tmp/artifacts
 
-      - name: Deploy
-        run: .ci_scripts/package_build/push_to_ppa.sh unstable /tmp/artifacts
-
   build_arm64:
 
     runs-on: ubuntu-20.04
