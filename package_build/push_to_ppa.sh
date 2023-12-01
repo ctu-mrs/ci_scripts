@@ -39,11 +39,11 @@ for FILE_PATH in `find $FROM_FOLDER -type f -name "*.deb"`; do
 
   echo "$0: Pushing the package '$FILE_PATH' to '$PPA', extracted pkg name: '$PACKAGE_NAME', architecture: '$ARCH', version: '$VERSION'"
 
-  if [[ "$1" == "unstable" ]]; then
+  if [[ "$1" == "stable" ]]; then
 
-    echo "$0: pushing to 'unstable', going to delete all older versions"
+    echo "$0: pushing to 'stable', going to delete all older files of the same version"
 
-    for file_to_delete in `ls | grep -e "${PACKAGE_NAME}_.*_${ARCH}.deb$"`; do
+    for file_to_delete in `ls | grep -e "${PACKAGE_NAME}_${VERSION}-.*_${ARCH}.deb$"`; do
 
       echo "$0: deleting '$file_to_delete'"
       rm $file_to_delete
@@ -52,9 +52,9 @@ for FILE_PATH in `find $FROM_FOLDER -type f -name "*.deb"`; do
 
   else
 
-    echo "$0: pushing to 'stable', going to delete all older files of the same version"
+    echo "$0: pushing to 'unstable/testing', going to delete all older versions"
 
-    for file_to_delete in `ls | grep -e "${PACKAGE_NAME}_${VERSION}-.*_${ARCH}.deb$"`; do
+    for file_to_delete in `ls | grep -e "${PACKAGE_NAME}_.*_${ARCH}.deb$"`; do
 
       echo "$0: deleting '$file_to_delete'"
       rm $file_to_delete
