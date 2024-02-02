@@ -35,7 +35,17 @@ fi
 # dependencies need for build the deb package
 sudo apt-get -y install ros-noetic-catkin python3-catkin-tools
 sudo apt-get -y install fakeroot dpkg-dev debhelper
-sudo pip3 install -U bloom future
+sudo pip3 install -U bloom future gitman
+
+cd $PACKAGE_FOLDER
+
+if [ -e .gitman.yaml ] || [ -e .gitman.yml ]; then
+  echo "$0: updating gitman submodules"
+  gitman install
+fi
+
+echo "$0: updating git submodules"
+git submodule update --init --recursive
 
 [ -d $WORKSPACE ] && rm -rf $WORKSPACE
 mkdir -p $WORKSPACE
