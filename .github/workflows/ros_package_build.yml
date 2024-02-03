@@ -59,12 +59,13 @@ jobs:
           ref: master
           path: .ci_scripts
           token: ${{ secrets.PUSH_TOKEN }}
+          submodules: 'recursive'
 
       - name: Update submodules
         run: |
            sudo pip3 install -U bloom gitman
            [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
-           git submodule update --init --recursive
+           ls -la
 
       - uses: ctu-mrs/run-on-arch-action@master
         name: Build artifact
