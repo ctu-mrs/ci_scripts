@@ -31,6 +31,11 @@ jobs:
           path: .ci_scripts
           token: ${{ secrets.PUSH_TOKEN }}
 
+      - name: Update submodules
+        run: |
+           sudo pip3 install -U bloom gitman
+           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
+
       - name: Build
         run: |
           mkdir -p /tmp/artifacts
@@ -59,13 +64,11 @@ jobs:
           ref: master
           path: .ci_scripts
           token: ${{ secrets.PUSH_TOKEN }}
-          submodules: 'recursive'
 
       - name: Update submodules
         run: |
            sudo pip3 install -U bloom gitman
            [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
-           ls -la
 
       - uses: ctu-mrs/run-on-arch-action@master
         name: Build artifact
@@ -98,7 +101,6 @@ jobs:
           # Produce a binary artifact and place it in the mounted volume
           run: |
             git config --global --add safe.directory "*"
-
             /tmp/repository/.ci_scripts/package_build/build_package.sh /tmp/repository /tmp/artifacts
 
       - name: Deploy

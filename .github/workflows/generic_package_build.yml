@@ -31,6 +31,11 @@ jobs:
           path: .ci_scripts
           token: ${{ secrets.PUSH_TOKEN }}
 
+      - name: Update submodules
+        run: |
+           sudo pip3 install -U bloom gitman
+           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
+
       - name: Build
         run: |
           mkdir -p /tmp/artifacts
@@ -60,6 +65,11 @@ jobs:
           path: .ci_scripts
           token: ${{ secrets.PUSH_TOKEN }}
 
+      - name: Update submodules
+        run: |
+           sudo pip3 install -U bloom gitman
+           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
+
       - uses: ctu-mrs/run-on-arch-action@master
         name: Build artifact
 
@@ -86,7 +96,7 @@ jobs:
 
           # Produce a binary artifact and place it in the mounted volume
           run: |
-            git config --global --add safe.directory /tmp/repository
+            git config --global --add safe.directory "*"
             /tmp/repository/.ci/build_package.sh unstable /tmp/artifacts
 
       - name: Deploy to unstable
