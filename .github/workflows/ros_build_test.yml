@@ -34,7 +34,7 @@ jobs:
       - name: Update submodules
         run: |
            sudo pip3 install -U bloom gitman
-           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
+           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install -f
 
       - name: Build
         run: |
@@ -65,7 +65,7 @@ jobs:
       - name: Update submodules
         run: |
            sudo pip3 install -U bloom gitman
-           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
+           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install -f
 
       - uses: ctu-mrs/run-on-arch-action@master
         name: Build artifact
