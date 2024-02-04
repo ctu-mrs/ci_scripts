@@ -33,7 +33,7 @@ jobs:
 
       - name: Update submodules
         run: |
-           sudo pip3 install -U bloom gitman
+           sudo pip3 install -U gitman
            [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install -f
 
       - name: Build
@@ -64,7 +64,7 @@ jobs:
 
       - name: Update submodules
         run: |
-           sudo pip3 install -U bloom gitman
+           sudo pip3 install -U gitman
            [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install -f
 
       - uses: ctu-mrs/run-on-arch-action@master
