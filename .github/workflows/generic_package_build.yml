@@ -34,7 +34,7 @@ jobs:
       - name: Update submodules
         run: |
            sudo pip3 install -U gitman
-           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
+           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install || echo "no gitman modules to install"
 
       - name: Build
         run: |
@@ -68,7 +68,7 @@ jobs:
       - name: Update submodules
         run: |
            sudo pip3 install -U gitman
-           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
+           [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install || echo "no gitman modules to install"
 
       - uses: ctu-mrs/run-on-arch-action@master
         name: Build artifact
