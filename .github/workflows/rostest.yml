@@ -2,6 +2,9 @@ name: rostest
 
 on:
   workflow_call:
+    secrets:
+      PUSH_TOKEN:
+        required: true
 
   workflow_dispatch:
 
