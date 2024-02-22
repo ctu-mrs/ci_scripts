@@ -55,15 +55,18 @@ rosdep install --from-path .
 
 echo "$0: building the workspace"
 
-catkin build --limit-status-rate 0.2 --cmake-args -DCOVERAGE=true -DMRS_ENABLE_TESTING=true
-catkin build --limit-status-rate 0.2 --cmake-args -DCOVERAGE=true -DMRS_ENABLE_TESTING=true --catkin-make-args tests
+catkin build --limit-status-rate 0.2 --cmake-args -DMRS_ENABLE_TESTING=true
+catkin build --limit-status-rate 0.2 --cmake-args -DMRS_ENABLE_TESTING=true --catkin-make-args tests
 
 echo "$0: testing"
 
 cd $WORKSPACE/src
-ROS_DIRS=$(find . -name package.xml -printf "%h\n")
+ROS_DIRS=$(find -L . -name package.xml -printf "%h\n")
 
 for DIR in $ROS_DIRS; do
+
+  echo "$0: running test for '$DIR'"
+
   cd $WORKSPACE/src/$DIR
   catkin test --this -p 1 -s
 done
