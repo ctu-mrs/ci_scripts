@@ -51,7 +51,7 @@ source $WORKSPACE/devel/setup.bash
 
 echo "$0: installing rosdep dependencies"
 
-rosdep install --from-path .
+rosdep install -y --from-path .
 
 echo "$0: building the workspace"
 
