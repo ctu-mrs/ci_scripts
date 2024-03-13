@@ -60,6 +60,12 @@ catkin build --limit-status-rate 0.2 --cmake-args -DMRS_ENABLE_TESTING=true --ca
 
 echo "$0: testing"
 
+## set coredump generation
+
+mkdir -p /tmp/coredump
+sudo sysctl -w kernel.core_pattern="/tmp/coredump/core_%e.%p"
+ulimit -c unlimited
+
 cd $WORKSPACE/src
 ROS_DIRS=$(find -L . -name package.xml -printf "%h\n")
 
@@ -72,3 +78,32 @@ for DIR in $ROS_DIRS; do
 done
 
 echo "$0: tests finished"
+
+if [ -z "$(ls -A /path/to/dir)" ]; then
+  exit 0
+else
+  echo "$0: core dumps detected"
+fi
+
+git config user.email github@github.com
+git config user.name github
+
+cd /tmp
+git clone https://$PUSH_TOKEN@github.com/ctu-mrs/buildfarm_coredumps
+
+cd /tmp/buildfarm_coredumps
+d="$(date +"%d-%m-%Y")_PACKAGE_FOLDER"
+mkdir -p "$d"
+cd "$d"
+mv /tmp/coredump/* ./
+
+git add -A
+git commit -m "Added new coredumps"
+
+# the upstream might have changed in the meantime, try to merge it first
+git fetch
+git merge origin/$BRANCH
+
+git push
+
+echo "$0: core dumps pushed"
