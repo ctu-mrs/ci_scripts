@@ -100,6 +100,7 @@ d="$(date +"%d-%m-%Y")_${PACKAGE_FOLDER##*/}"
 mkdir -p "$d"
 cd "$d"
 mv /tmp/coredump/* ./
+cp -L $WORKSPACE/devel/lib/*.so ./
 
 git add -A
 git commit -m "Added new coredumps"
