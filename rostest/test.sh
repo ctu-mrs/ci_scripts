@@ -74,7 +74,9 @@ for DIR in $ROS_DIRS; do
   echo "$0: running test for '$DIR'"
 
   cd $WORKSPACE/src/$DIR
-  catkin test --this -p 1 -s
+  FAILED=0
+  catkin test --this -p 1 -s || ( echo "$0: tests failed!" && FAILED=0)
+
 done
 
 sleep 100 &
@@ -85,7 +87,7 @@ echo "$0: tests finished"
 ls /tmp/coredump
 
 if [ -z "$(ls -A /tmp/coredump)" ]; then
-  exit 0
+  exit $FAILED
 else
   echo "$0: core dumps detected"
 fi
@@ -112,3 +114,5 @@ git merge origin/$BRANCH
 git push
 
 echo "$0: core dumps pushed"
+
+exit 1
