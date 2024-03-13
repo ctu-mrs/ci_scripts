@@ -77,9 +77,14 @@ for DIR in $ROS_DIRS; do
   catkin test --this -p 1 -s
 done
 
+sleep 100 &
+kill -s SIGTRAP $(pgrep sleep)
+
 echo "$0: tests finished"
 
-if [ -z "$(ls -A /path/to/dir)" ]; then
+ls /tmp/coredump
+
+if [ -z "$(ls -A /tmp/coredump)" ]; then
   exit 0
 else
   echo "$0: core dumps detected"
