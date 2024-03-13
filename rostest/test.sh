@@ -109,7 +109,7 @@ git commit -m "Added new coredumps"
 
 # the upstream might have changed in the meantime, try to merge it first
 git fetch
-git merge origin/$BRANCH
+git merge origin/master
 
 git push
 
