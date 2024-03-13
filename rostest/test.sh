@@ -101,6 +101,9 @@ mkdir -p "$d"
 cd "$d"
 mv /tmp/coredump/* ./
 cp -L $WORKSPACE/devel/lib/*.so ./
+cd ..
+tar -cvzf "$d.tar.gz" "$d"
+rm -rf "$d"
 
 git add -A
 git commit -m "Added new coredumps"
