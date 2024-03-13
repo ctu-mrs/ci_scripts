@@ -75,7 +75,7 @@ for DIR in $ROS_DIRS; do
 
   cd $WORKSPACE/src/$DIR
   FAILED=0
-  catkin test --this -p 1 -s || FAILED=1
+  catkin test --limit-status-rate 0.2 --this -p 1 -s || FAILED=1
 
 done
 
