@@ -75,7 +75,7 @@ for DIR in $ROS_DIRS; do
 
   cd $WORKSPACE/src/$DIR
   FAILED=0
-  catkin test --this -p 1 -s || ( echo "$0: tests failed!" && FAILED=0)
+  catkin test --this -p 1 -s || FAILED=1
 
 done
 
@@ -92,13 +92,13 @@ else
   echo "$0: core dumps detected"
 fi
 
+cd /tmp
+git clone https://$PUSH_TOKEN@github.com/ctu-mrs/buildfarm_coredumps
+cd /tmp/buildfarm_coredumps
+
 git config user.email github@github.com
 git config user.name github
 
-cd /tmp
-git clone https://$PUSH_TOKEN@github.com/ctu-mrs/buildfarm_coredumps
-
-cd /tmp/buildfarm_coredumps
 d="$(date +"%d-%m-%Y")_PACKAGE_FOLDER"
 mkdir -p "$d"
 cd "$d"
