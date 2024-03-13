@@ -96,7 +96,7 @@ cd /tmp/buildfarm_coredumps
 git config user.email github@github.com
 git config user.name github
 
-d="$(date +"%d-%m-%Y")_${PACKAGE_FOLDER##*/}"
+d="$(date +"%Y-%m-%d_%H.%M.%S")_${PACKAGE_FOLDER##*/}"
 mkdir -p "$d"
 cd "$d"
 mv /tmp/coredump/* ./
