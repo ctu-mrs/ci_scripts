@@ -79,9 +79,6 @@ for DIR in $ROS_DIRS; do
 
 done
 
-sleep 100 &
-kill -s SIGTRAP $(pgrep sleep)
-
 echo "$0: tests finished"
 
 ls /tmp/coredump
