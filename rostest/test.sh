@@ -12,7 +12,7 @@ WORKSPACE=/tmp/workspace
 # needed for building open_vins
 export ROS_VERSION=1
 
-sudo apt-get -y install dpkg-dev
+sudo apt-get -y install dpkg-dev git-lfs
 
 ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
@@ -63,7 +63,7 @@ echo "$0: testing"
 ## set coredump generation
 
 mkdir -p /tmp/coredump
-sudo sysctl -w kernel.core_pattern="/tmp/coredump/core_%e.%p"
+sudo sysctl -w kernel.core_pattern="/tmp/coredump/%e_%p.core"
 ulimit -c unlimited
 
 cd $WORKSPACE/src
