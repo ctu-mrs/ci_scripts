@@ -12,7 +12,7 @@ WORKSPACE=/tmp/workspace
 # needed for building open_vins
 export ROS_VERSION=1
 
-sudo apt-get -y install dpkg-dev git-lfs
+sudo apt-get -y install dpkg-dev
 
 ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
