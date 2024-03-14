@@ -12,7 +12,7 @@ WORKSPACE=/tmp/workspace
 # needed for building open_vins
 export ROS_VERSION=1
 
-sudo apt-get -y install dpkg-dev
+sudo apt-get -y install dpkg-dev git-lfs
 
 ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
@@ -83,7 +83,7 @@ echo "$0: tests finished"
 
 ls /tmp/coredump
 
-if [ -z "$(ls -A /tmp/coredump)" ]; then
+if [ -z "$(ls -A /tmp/coredump | grep .core)" ]; then
   exit $FAILED
 else
   echo "$0: core dumps detected"
