@@ -39,8 +39,6 @@ catkin init
 catkin config --profile debug --cmake-args -DCMAKE_BUILD_TYPE=Debug
 catkin profile set debug
 
-catkin build
-
 cd $WORKSPACE/src
 
 ## | ------------ clone test-specific dependencies ------------ |
@@ -52,6 +50,8 @@ if [ -e $PACKAGE_FOLDER/exec_while_testing.sh ]; then
 fi
 
 cd $WORKSPACE/src
+
+catkin build
 
 ## | ----------------- link the tested package ---------------- |
 
