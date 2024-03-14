@@ -69,12 +69,13 @@ ulimit -c unlimited
 cd $WORKSPACE/src
 ROS_DIRS=$(find -L . -name package.xml -printf "%h\n")
 
+FAILED=0
+
 for DIR in $ROS_DIRS; do
 
   echo "$0: running test for '$DIR'"
 
   cd $WORKSPACE/src/$DIR
-  FAILED=0
   catkin test --limit-status-rate 0.2 --this -p 1 -s || FAILED=1
 
 done
