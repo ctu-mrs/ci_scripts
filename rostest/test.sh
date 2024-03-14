@@ -41,9 +41,19 @@ catkin profile set debug
 
 catkin build
 
-## | ---------------- clone the tested package ---------------- |
+cd $WORKSPACE/src
+
+## | ------------ clone test-specific dependencies ------------ |
+
+if [ -e $PACKAGE_FOLDER/exec_while_testing.sh ]; then
+
+  $PACKAGE_FOLDER/exec_while_testing.sh
+
+fi
 
 cd $WORKSPACE/src
+
+## | ----------------- link the tested package ---------------- |
 
 ln -s $PACKAGE_FOLDER $WORKSPACE/src
 
