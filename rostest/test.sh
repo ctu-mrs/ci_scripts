@@ -121,6 +121,7 @@ tar -cvzf "$d.tar.gz" "$d"
 rm -rf "$d"
 
 split -b 50M "$d.tar.gz" "$d.tar.gz.part"
+rm "$d.tar.gz"
 
 git add -A
 git commit -m "Added new coredumps"
