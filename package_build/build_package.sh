@@ -88,8 +88,10 @@ for PACKAGE in $BUILD_ORDER; do
   export DEB_BUILD_OPTIONS="parallel=`nproc`"
   bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic
 
+  SHA=$(git rev-parse --short HEAD)
+
   epoch=2
-  build_flag="$(date +%Y%m%d.%H%M%S)~on.push.build"
+  build_flag="$(date +%Y%m%d.%H%M%S)~on.push.build.git.$SHA"
 
   sed -i "s/(/($epoch:/" ./debian/changelog
   sed -i "s/)/.${build_flag})/" ./debian/changelog
