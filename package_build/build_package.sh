@@ -28,14 +28,23 @@ sudo apt-get -y install dpkg-dev
 ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
 # we already have a docker image with ros for the ARM build
-if [[ "$ARCH" != "arm64" ]]; then
-  echo "arm64 architecture detected"
-  $MY_PATH/add_ros_ppa.sh
-fi
+if [[ "$ARCH" == "arm64" ]]; then
 
-if [[ "$ARCH" != "armhf" ]]; then
-  echo "armhf architecture detected"
+  echo "$0: arm64 architecture detected"
+
+else [[ "$ARCH" == "armhf" ]]; then
+
+  echo "$0: armhf architecture detected"
+
   export SSL_CERT_FILE=/usr/lib/ssl/certs/ca-certificates.crt
+
+  $MY_PATH/add_ros_ppa.sh
+
+else
+
+  echo "$0: probably amd64 architecture"
+
+  $MY_PATH/add_ros_ppa.sh
 fi
 
 # dependencies need for build the deb package
