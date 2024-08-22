@@ -32,7 +32,7 @@ if [[ "$ARCH" == "arm64" ]]; then
 
   echo "$0: arm64 architecture detected"
 
-else [[ "$ARCH" == "armhf" ]]; then
+elif [[ "$ARCH" == "armhf" ]]; then
 
   echo "$0: armhf architecture detected"
 
