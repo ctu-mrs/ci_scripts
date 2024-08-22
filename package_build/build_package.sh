@@ -38,6 +38,8 @@ elif [[ "$ARCH" == "armhf" ]]; then
 
   export SSL_CERT_FILE=/usr/lib/ssl/certs/ca-certificates.crt
 
+  sudo c_rehash /etc/ssl/certs
+
   $MY_PATH/add_ros_ppa.sh
 
 else
