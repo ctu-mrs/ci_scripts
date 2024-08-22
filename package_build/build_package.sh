@@ -29,7 +29,13 @@ ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
 # we already have a docker image with ros for the ARM build
 if [[ "$ARCH" != "arm64" ]]; then
+  echo "arm64 architecture detected"
   $MY_PATH/add_ros_ppa.sh
+fi
+
+if [[ "$ARCH" != "armhf" ]]; then
+  echo "armhf architecture detected"
+  export SSL_CERT_FILE=/usr/lib/ssl/certs/ca-certificates.crt
 fi
 
 # dependencies need for build the deb package
