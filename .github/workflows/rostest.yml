@@ -34,7 +34,7 @@ jobs:
       - name: Update submodules
         run: |
            sudo pip3 install -U gitman
-           [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] && gitman install || echo "no gitman modules to install"
+           ( [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ) && gitman install || echo "no gitman submodules to be installed"
 
       - name: Test
         run: |

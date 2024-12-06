@@ -34,7 +34,7 @@ jobs:
       - name: Update submodules
         run: |
            sudo pip3 install -U gitman
-           ( [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ) gitman install || echo "no gitman submodules to be installed"
+           ( [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ) && gitman install || echo "no gitman submodules to be installed"
 
       - name: Build
         run: |
@@ -68,7 +68,7 @@ jobs:
       - name: Update submodules
         run: |
            sudo pip3 install -U gitman
-           ( [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ) gitman install || echo "no gitman submodules to be installed"
+           ( [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ) && gitman install || echo "no gitman submodules to be installed"
 
       - uses: ctu-mrs/run-on-arch-action@master
         name: Build artifact
