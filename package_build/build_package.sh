@@ -102,7 +102,10 @@ for PACKAGE in $BUILD_ORDER; do
 
   echo "$0: Running bloom on a package in '$PKG_PATH'"
 
-  export DEB_BUILD_OPTIONS="parallel=`nproc`"
+  if [[ "$ARCH" != "arm64" ]]; then
+    export DEB_BUILD_OPTIONS="parallel=`nproc`"
+  fi
+
   bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic
 
   SHA=$(git rev-parse --short HEAD)
@@ -115,7 +118,11 @@ for PACKAGE in $BUILD_ORDER; do
 
   echo "$0: calling build on '$PKG_PATH'"
 
-  fakeroot debian/rules "binary --parallel"
+  if [[ "$ARCH" != "arm64" ]]; then
+    fakeroot debian/rules "binary --parallel"
+  else
+    fakeroot debian/rules "binary"
+  fi
 
   echo "$0: finished building '$PACKAGE'"
 
