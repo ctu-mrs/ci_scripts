@@ -13,7 +13,7 @@ trap 'echo "$0: \"${last_command}\" command failed with exit code $?' ERR
 MY_PATH=`dirname "$0"`
 MY_PATH=`( cd "$MY_PATH" && pwd )`
 
-REPO_PATH=$MY_PATH/../..
+REPO_PATH=$MY_PATH/../../..
 
 cd $MY_PATH
 
@@ -37,7 +37,7 @@ ARTIFACTS_FOLDER=$4
 
 echo "$0: pulling the base image"
 
-$REPO_PATH/ci_scripts/helpers/wait_for_docker.sh
+$REPO_PATH/helpers/wait_for_docker.sh
 
 docker pull $BASE_IMAGE
 
