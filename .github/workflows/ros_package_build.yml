@@ -42,10 +42,6 @@ jobs:
     needs: init-artifacts
     runs-on: ubuntu-22.04
     timeout-minutes: 360 # 6 hour timeout
-    strategy:
-      matrix:
-        job: ${{ fromJson(needs.generate-jobs.outputs.packages) }}
-      max-parallel: 1 # Run jobs serially
     env:
       TOKEN: ${{ secrets.DOCKERHUB }}
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
