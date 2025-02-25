@@ -14,66 +14,41 @@ REPO_PATH=$MY_PATH/../..
 ## | -------------------------- args -------------------------- |
 
 # INPUTS
-LIST=$1
-VARIANT=$2
-REPOSITORY=$3
-BASE_IMAGE=$4
-DOCKER_IMAGE=$5
-ARTIFACTS_FOLDER=$6
-PIPELINE_BUILD=$7 # {pipeline, onpush}
+BASE_IMAGE=$1
+DOCKER_IMAGE=$2
+ARTIFACTS_FOLDER=$3
+REPOSITORY_FOLDER=$4
 
-[ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
+[ -z $RUN_LOCALLY ] && RUN_LOCALLY=true
 
 # default for testing
 
-[ -z $LIST ] && LIST=nonbloom
-[ -z $VARIANT ] && VARIANT=unstable
-[ -z $REPOSITORY ] && REPOSITORY=mrs_uav_shell_additions
 [ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_noetic:2025-02-05
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $PIPELINE_BUILD ] && PIPELINE_BUILD="pipeline"
+[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/mrs_uav_shell_additions
 
 ## | ---------------------- derived args ---------------------- |
 
 # determine our architecture
 ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
-YAML_FILE=$REPO_PATH/${LIST}.yaml
-
 # needed for building open_vins
 export ROS_VERSION=1
 
-REPOS=$($REPO_PATH/scripts/helpers/get_repo_source.py $YAML_FILE $VARIANT $ARCH $REPOSITORY)
-
-# clone and checkout
-echo "$REPOS" | while IFS= read -r REPO; do
-
-  cd /tmp
-
-  sudo rm -rf repository
-
-  REPO_NAME=$(echo "$REPO" | awk '{print $1}')
-  URL=$(echo "$REPO" | awk '{print $2}')
-  BRANCH=$(echo "$REPO" | awk '{print $3}')
-  GITMAN=$(echo "$REPO" | awk '{print $4}')
-
-  echo "$0: cloning '$URL --depth 1 --branch $BRANCH' into '$REPO'"
-  [ -e repository ] && rm -rf repository || git clone $URL --recurse-submodules --shallow-submodules --depth 1 --branch $BRANCH repository
-
-  if [[ "$GITMAN" == "True" ]]; then
-    cd repository
-    pipx install gitman
-    [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
-  fi
-
-done
-
 echo "$0: repository cloned to /tmp/repository"
+
+cd $REPOSITORY_FOLDER
+
+echo "$0: updating git submodules"
+git submodule update --init --recursive
+
+sudo rm -rf /tmp/repository
+cp -r $REPOSITORY_FOLDER /tmp/repository
 
 ## | --------------------- prepare docker --------------------- |
 
-$REPO_PATH/ci_scripts/helpers/wait_for_docker.sh
+$REPO_PATH/helpers/wait_for_docker.sh
 
 if ! $RUN_LOCALLY; then
 
@@ -112,7 +87,7 @@ docker run \
   -v /tmp/debs:/etc/docker/debs \
   -v /tmp/other_files:/etc/docker/other_files \
   $DOCKER_IMAGE \
-  /bin/bash -c "/etc/docker/other_files/entrypoint.sh $VARIANT /etc/docker/debs $BASE_IMAGE $PIPELINE_BUILD"
+  /bin/bash -c "/etc/docker/other_files/entrypoint.sh $VARIANT /etc/docker/debs $BASE_IMAGE"
 
 # if there are any artifacts, update the builder image
 

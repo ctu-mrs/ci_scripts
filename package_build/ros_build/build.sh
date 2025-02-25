@@ -14,25 +14,19 @@ REPO_PATH=$MY_PATH/../..
 ## | -------------------------- args -------------------------- |
 
 # INPUTS
-LIST=$1
-VARIANT=$2
-REPOSITORY=$3
-BASE_IMAGE=$4
-DOCKER_IMAGE=$5
-ARTIFACTS_FOLDER=$6
-PIPELINE_BUILD=$7 # {pipeline, onpush}
+BASE_IMAGE=$1
+DOCKER_IMAGE=$2
+ARTIFACTS_FOLDER=$3
+REPOSITORY_FOLDER=$4
 
-[ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
+[ -z $RUN_LOCALLY ] && RUN_LOCALLY=true
 
 # default for testing
 
-[ -z $LIST ] && LIST=mrs
-[ -z $VARIANT ] && VARIANT=unstable
-[ -z $REPOSITORY ] && REPOSITORY=mrs_lib
 [ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_noetic:2025-02-05
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $PIPELINE_BUILD ] && PIPELINE_BUILD="pipeline"
+[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/mrs_uav_core/ros_packages/.gitman/mrs_lib
 
 ## | ---------------------- derived args ---------------------- |
 
@@ -41,43 +35,22 @@ ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
 ROSDEP_FILE="generated_${LIST}_${ARCH}.yaml"
 
-YAML_FILE=$REPO_PATH/${LIST}.yaml
-
 # needed for building open_vins
 export ROS_VERSION=1
 
-REPOS=$($REPO_PATH/scripts/helpers/get_repo_source.py $YAML_FILE $VARIANT $ARCH $REPOSITORY)
+cd $REPOSITORY_FOLDER
 
-# clone and checkout
-echo "$REPOS" | while IFS= read -r REPO; do
+echo "$0: updating git submodules"
+git submodule update --init --recursive
 
-  cd /tmp
-
-  sudo rm -rf repository
-
-  REPO_NAME=$(echo "$REPO" | awk '{print $1}')
-  URL=$(echo "$REPO" | awk '{print $2}')
-  BRANCH=$(echo "$REPO" | awk '{print $3}')
-  GITMAN=$(echo "$REPO" | awk '{print $4}')
-
-  echo "$0: cloning '$URL --depth 1 --branch $BRANCH' into '$REPO'"
-  [ -e repository ] && rm -rf repository || git clone $URL --recurse-submodules --shallow-submodules --depth 1 --branch $BRANCH repository
-
-  if [[ "$GITMAN" == "True" ]]; then
-    cd repository
-    pipx install gitman
-    [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install
-  fi
-
-done
-
-echo "$0: repository cloned to /tmp/repository"
+sudo rm -rf /tmp/repository
+cp -r $REPOSITORY_FOLDER /tmp/repository
 
 ## --------------------------------------------------------------
 ## |                        docker build                        |
 ## --------------------------------------------------------------
 
-$REPO_PATH/ci_scripts/helpers/wait_for_docker.sh
+$REPO_PATH/helpers/wait_for_docker.sh
 
 if ! $RUN_LOCALLY; then
 
@@ -86,8 +59,6 @@ if ! $RUN_LOCALLY; then
   echo $PUSH_TOKEN | docker login ghcr.io -u ctumrsbot --password-stdin
 
 fi
-
-TRANSPORT_IMAGE=alpine:latest
 
 docker buildx use default
 
@@ -102,22 +73,11 @@ fi
 
 echo "$0: image loaded"
 
-if [ ! -e $ARTIFACTS_FOLDER/compiled.txt ]; then
-  touch $ARTIFACTS_FOLDER/compiled.txt
-fi
-
-if [ ! -e $ARTIFACTS_FOLDER/$ROSDEP_FILE ]; then
-  touch $ARTIFACTS_FOLDER/$ROSDEP_FILE
-fi
-
 mkdir -p /tmp/debs
 mkdir -p /tmp/other_files
 
 cp $ARTIFACTS_FOLDER/base_sha.txt /tmp/other_files/base_sha.txt
 cp $MY_PATH/entrypoint.sh /tmp/other_files/entrypoint.sh
-
-mv $ARTIFACTS_FOLDER/compiled.txt /tmp/other_files/compiled.txt
-mv $ARTIFACTS_FOLDER/$ROSDEP_FILE /tmp/other_files/rosdep.yaml
 
 ## | ---------------------- run the test ---------------------- |
 
@@ -127,7 +87,7 @@ docker run \
   -v /tmp/debs:/etc/docker/debs \
   -v /tmp/other_files:/etc/docker/other_files \
   $DOCKER_IMAGE \
-  /bin/bash -c "/etc/docker/other_files/entrypoint.sh $PIPELINE_BUILD"
+  /bin/bash -c "/etc/docker/other_files/entrypoint.sh"
 
 # if there are any artifacts, update the builder image
 
@@ -135,32 +95,11 @@ DEBS_EXIST=$(ls /tmp/debs | grep ".deb" | wc -l)
 
 if [ $DEBS_EXIST -gt 0 ]; then
 
-  echo "$0: updating the builder docker image"
-
-  cd $MY_PATH
-
-  PASS_TO_DOCKER_BUILD="Dockerfile /tmp/debs"
-
-  tar -czh $PASS_TO_DOCKER_BUILD 2>/dev/null | docker build - --target squash_builder --file Dockerfile --build-arg BASE_IMAGE=${BASE_IMAGE} --build-arg BUILDER_IMAGE=${DOCKER_IMAGE} --tag ${DOCKER_IMAGE} --progress plain
-
-  echo "$0: exporting the builder docker image as ${DOCKER_IMAGE}"
-
-  if ! $RUN_LOCALLY; then
-
-    docker tag $DOCKER_IMAGE ghcr.io/ctu-mrs/buildfarm:$DOCKER_IMAGE
-    docker push ghcr.io/ctu-mrs/buildfarm:$DOCKER_IMAGE
-
-  fi
-
   echo "$0: copying artifacts"
 
   mv /tmp/debs/* $ARTIFACTS_FOLDER/
 
 fi
-
-# copy the artifacts for the next build job
-mv /tmp/other_files/rosdep.yaml $ARTIFACTS_FOLDER/$ROSDEP_FILE
-mv /tmp/other_files/compiled.txt $ARTIFACTS_FOLDER/compiled.txt
 
 echo "$0: "
 echo "$0: artifacts are:"

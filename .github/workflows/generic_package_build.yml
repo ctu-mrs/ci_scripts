@@ -10,94 +10,121 @@ on:
 
 jobs:
 
-  build_amd64:
-    runs-on: ubuntu-20.04
-
+  init-artifacts:
+    runs-on: ubuntu-22.04
     env:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
-
     steps:
-
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: 'recursive'
-
       - name: Checkout CI scripts
         uses: actions/checkout@v3
         with:
           repository: ctu-mrs/ci_scripts
-          ref: master
-          path: .ci_scripts
-          token: ${{ secrets.PUSH_TOKEN }}
-
-      - name: Update submodules
-        run: |
-           sudo pip3 install -U gitman
-           ( [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ) && gitman install || echo "no gitman submodules to be installed"
-
-      - name: Build
+          ref: containerized
+          path: ci_scripts
+      - id: init_artifacts
         run: |
           mkdir -p /tmp/artifacts
-          .ci/build_package.sh unstable /tmp/artifacts
+      - id: prime_image
+        run: |
+          ./ci_scripts/docker/prime_image/prime_image.sh ctumrs/ros_noetic:2025-02-05 noetic_builder_${{ github.RUN_ID }} unstable
+      - name: Save artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: /tmp/artifacts/
+          overwrite: true
 
-      - name: Deploy
-        run: .ci_scripts/package_build/push_to_ppa.sh unstable /tmp/artifacts
-
-  build_arm64:
-
-    runs-on: ubuntu-20.04
-
+  build-job:
+    needs: generate-jobs
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360 # 6 hour timeout
+    strategy:
+      matrix:
+        job: ${{ fromJson(needs.generate-jobs.outputs.packages) }}
+      max-parallel: 1 # Run jobs serially
     env:
+      TOKEN: ${{ secrets.DOCKERHUB }}
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
-
     steps:
+      - name: Load artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts
+          path: /tmp/artifacts/
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: 'recursive'
-
       - name: Checkout CI scripts
         uses: actions/checkout@v3
         with:
           repository: ctu-mrs/ci_scripts
-          ref: master
-          path: .ci_scripts
+          ref: containerized
+          path: ci_scripts
           token: ${{ secrets.PUSH_TOKEN }}
-
-      - name: Update submodules
+      - id: build
         run: |
-           sudo pip3 install -U gitman
-           ( [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ) && gitman install || echo "no gitman submodules to be installed"
-
-      - uses: ctu-mrs/run-on-arch-action@master
-        name: Build artifact
-
-        id: build
-
+          ./ci_scripts/package_build/nonbloom_build/build.sh ctumrs/ros_noetic:2025-02-05 noetic_builder_${{ github.RUN_ID }} /tmp/artifacts $PWD
+          ls /tmp/artifacts
+      - name: Delete old artifacts
+        uses: geekyeggo/delete-artifact@v5
         with:
-          arch: aarch64
-          distro: noetic
+          name: artifacts
+          failOnError: false
+      - name: Save artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: /tmp/artifacts/
+          overwrite: true
 
-          githubToken: ${{ github.token }}
+  collect-artifacts:
+    runs-on: ubuntu-22.04
+    needs: build-job
+    env:
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+    steps:
+      - name: Load artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts
+          path: /tmp/artifacts/
+      - id: execute
+        run: |
+          rm /tmp/artifacts/compiled.txt 2> /dev/null || true
+          rm /tmp/artifacts/base_sha.txt 2> /dev/null || true
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: containerized
+          path: ci_scripts
+          token: ${{ secrets.PUSH_TOKEN }}
+      - name: Deploy
+        run: ./ci_scripts/package_build/push_to_ppa.sh unstable /tmp/artifacts
 
-          # Create an artifacts directory
-          setup: |
-            mkdir -p "/tmp/artifacts"
-            mkdir -p "/tmp/repository"
-
-          # Mount the artifacts directory as /artifacts in the container
-          dockerRunArgs: |
-            --volume "$PWD:/tmp/repository"
-            --volume "/tmp/artifacts:/tmp/artifacts"
-
-          # The shell to run commands with in the container
-          shell: /bin/sh
-
-          # Produce a binary artifact and place it in the mounted volume
-          run: |
-            git config --global --add safe.directory "*"
-            /tmp/repository/.ci/build_package.sh unstable /tmp/artifacts
-
-      - name: Deploy to unstable
-        run: .ci_scripts/package_build/push_to_ppa.sh unstable /tmp/artifacts
+  delete_builder:
+    needs: collect-artifacts
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete current image
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          packages: '${{ github.event.repository.name }}'
+          delete-tags: 'noetic_builder_${{ github.RUN_ID }}'
+          token: ${{ secrets.PUSH_TOKEN }}
+      - name: Delete old images
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          packages: '${{ github.event.repository.name }}'
+          older-than: 7 days
+          token: ${{ secrets.PUSH_TOKEN }}
