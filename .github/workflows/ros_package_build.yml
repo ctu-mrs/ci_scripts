@@ -115,6 +115,8 @@ jobs:
     needs: collect-artifacts
     if: always()
     runs-on: ubuntu-latest
+    env:
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
     steps:
       - name: Delete current image
         uses: dataaxiom/ghcr-cleanup-action@v1
