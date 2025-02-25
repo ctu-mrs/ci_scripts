@@ -39,7 +39,7 @@ jobs:
           overwrite: true
 
   build-job:
-    needs: generate-jobs
+    needs: init-artifacts
     runs-on: ubuntu-22.04
     timeout-minutes: 360 # 6 hour timeout
     strategy:
@@ -115,6 +115,8 @@ jobs:
     needs: collect-artifacts
     if: always()
     runs-on: ubuntu-latest
+    env:
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
     steps:
       - name: Delete current image
         uses: dataaxiom/ghcr-cleanup-action@v1
