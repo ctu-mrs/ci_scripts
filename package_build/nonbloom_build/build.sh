@@ -19,7 +19,7 @@ DOCKER_IMAGE=$2
 ARTIFACTS_FOLDER=$3
 REPOSITORY_FOLDER=$4
 
-[ -z $RUN_LOCALLY ] && RUN_LOCALLY=true
+[ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
 
 # default for testing
 
