@@ -1,4 +1,4 @@
-name: generic_package_build
+name: ros_package_build
 
 on:
   workflow_call:

@@ -45,6 +45,13 @@ cd $REPOSITORY_FOLDER
 echo "$0: updating git submodules"
 git submodule update --init --recursive
 
+if [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ; then
+
+  pipx install gitman
+  gitman install
+
+fi
+
 sudo rm -rf /tmp/repository
 cp -r $REPOSITORY_FOLDER /tmp/repository
 
