@@ -18,6 +18,7 @@ BASE_IMAGE=$1
 DOCKER_IMAGE=$2
 ARTIFACTS_FOLDER=$3
 REPOSITORY_FOLDER=$4
+REPOSITORY_NAME=$5
 
 [ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
 
@@ -27,6 +28,7 @@ REPOSITORY_FOLDER=$4
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
 [ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/mrs_uav_shell_additions
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_uav_shell_additions
 
 ## | ---------------------- derived args ---------------------- |
 
@@ -67,8 +69,8 @@ echo "$0: loading cached builder docker image"
 
 if ! $RUN_LOCALLY; then
 
-  docker pull ghcr.io/ctu-mrs/buildfarm:$DOCKER_IMAGE
-  docker tag ghcr.io/ctu-mrs/buildfarm:$DOCKER_IMAGE $DOCKER_IMAGE
+  docker pull ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE
+  docker tag ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE $DOCKER_IMAGE
 
 fi
 

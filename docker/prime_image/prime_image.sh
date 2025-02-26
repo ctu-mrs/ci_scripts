@@ -23,6 +23,7 @@ BASE_IMAGE=$1
 OUTPUT_IMAGE=$2
 PPA_VARIANT=$3
 ARTIFACTS_FOLDER=$4
+REPOSITORY_NAME=$5
 
 [ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
 
@@ -32,6 +33,7 @@ ARTIFACTS_FOLDER=$4
 [ -z $OUTPUT_IMAGE ] && OUTPUT_IMAGE=noetic_builder
 [ -z $PPA_VARIANT ] && PPA_VARIANT=unstable
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
 
 ## | ---------------------- docker build ---------------------- |
 
@@ -61,8 +63,8 @@ echo "$0: exporting image"
 
 if ! $RUN_LOCALLY; then
 
-  docker tag $OUTPUT_IMAGE ghcr.io/ctu-mrs/buildfarm:$OUTPUT_IMAGE
-  docker push ghcr.io/ctu-mrs/buildfarm:$OUTPUT_IMAGE
+  docker tag $OUTPUT_IMAGE ghcr.io/ctu-mrs/$REPOSITORY_NAME:$OUTPUT_IMAGE
+  docker push ghcr.io/ctu-mrs/$REPOSITORY_NAME:$OUTPUT_IMAGE
 
 fi
 
