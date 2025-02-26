@@ -13,6 +13,7 @@ env:
   BUILDER_IMAGE: noetic_builder_${{ github.RUN_ID }}
   ARTIFACTS_FOLDER: /tmp/artifacts
   VARIANT: unstable
+  PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
 
 jobs:
 
