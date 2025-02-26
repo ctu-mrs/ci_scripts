@@ -10,10 +10,10 @@ on:
 
 env:
   BASE_IMAGE: ctumrs/ros_noetic:2025-02-05
-  BUILDER_IMAGE: noetic_builder_${{ github.RUN_ID }}
+  BUILDER_IMAGE: noetic_builder_${{github.RUN_ID}}
   ARTIFACTS_FOLDER: /tmp/artifacts
   VARIANT: unstable
-  PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+  PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
 
 jobs:
 
@@ -32,15 +32,15 @@ jobs:
           path: ci_scripts
       - id: init_artifacts
         run: |
-          mkdir -p ${{ vars.ARTIFACTS_FOLDER }}
+          mkdir -p ${{env.ARTIFACTS_FOLDER}}
       - id: prime_image
         run: |
-          ./ci_scripts/docker/prime_image/prime_image.sh $BASE_IMAGE $BUILDER_IMAGE $VARIANT ${{ vars.ARTIFACTS_FOLDER }} ${{ github.event.repository.name }}
+          ./ci_scripts/docker/prime_image/prime_image.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}} ${{github.event.repository.name}}
       - name: Save artifacts
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
-          path: ${{ vars.ARTIFACTS_FOLDER }}
+          path: ${{env.ARTIFACTS_FOLDER}}
           overwrite: true
 
   build-job:
@@ -52,7 +52,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifacts
-          path: ${{ vars.ARTIFACTS_FOLDER }}
+          path: ${{env.ARTIFACTS_FOLDER}}
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -63,10 +63,10 @@ jobs:
           repository: ctu-mrs/ci_scripts
           ref: containerized
           path: ci_scripts
-          token: ${{ secrets.PUSH_TOKEN }}
+          token: ${{secrets.PUSH_TOKEN}}
       - id: build
         run: |
-          ./ci_scripts/package_build/ros_build/build.sh $BASE_IMAGE $BUILDER_IMAGE ${{ vars.ARTIFACTS_FOLDER }} $PWD ${{ github.event.repository.name }}
+          ./ci_scripts/package_build/ros_build/build.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.ARTIFACTS_FOLDER}} $PWD ${{github.event.repository.name}}
       - name: Delete old artifacts
         uses: geekyeggo/delete-artifact@v5
         with:
@@ -76,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
-          path: ${{ vars.ARTIFACTS_FOLDER }}
+          path: ${{env.ARTIFACTS_FOLDER}}
           overwrite: true
 
   collect-artifacts:
@@ -87,11 +87,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifacts
-          path: ${{ vars.ARTIFACTS_FOLDER }}
+          path: ${{env.ARTIFACTS_FOLDER}}
       - id: execute
         run: |
-          rm ${{ vars.ARTIFACTS_FOLDER }}/compiled.txt 2> /dev/null || true
-          rm ${{ vars.ARTIFACTS_FOLDER }}/base_sha.txt 2> /dev/null || true
+          rm ${{env.ARTIFACTS_FOLDER}}/compiled.txt 2> /dev/null || true
+          rm ${{env.ARTIFACTS_FOLDER}}/base_sha.txt 2> /dev/null || true
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -102,9 +102,9 @@ jobs:
           repository: ctu-mrs/ci_scripts
           ref: containerized
           path: ci_scripts
-          token: ${{ secrets.PUSH_TOKEN }}
+          token: ${{secrets.PUSH_TOKEN}}
       - name: Deploy
-        run: ./ci_scripts/package_build/push_to_ppa.sh $VARIANT ${{ vars.ARTIFACTS_FOLDER }}
+        run: ./ci_scripts/package_build/push_to_ppa.sh ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}}
 
   delete_builder:
     needs: collect-artifacts
@@ -114,7 +114,7 @@ jobs:
       - name: Delete old images
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
-          packages: '${{ github.event.repository.name }}'
+          packages: '${{github.event.repository.name}}'
           older-than: 7 days
           keep-n-tagged: 1
-          token: ${{ secrets.PUSH_TOKEN }}
+          token: ${{secrets.PUSH_TOKEN}}
