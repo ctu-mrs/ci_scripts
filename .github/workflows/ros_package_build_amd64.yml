@@ -10,7 +10,7 @@ on:
 
 env:
   BASE_IMAGE: ctumrs/ros_noetic:2025-02-05
-  BUILDER_IMAGE: noetic_builder_${{github.RUN_ID}}
+  BUILDER_IMAGE: noetic_builder_amd_${{github.RUN_ID}}
   ARTIFACTS_FOLDER: /tmp/artifacts
   VARIANT: unstable
   PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
