@@ -1,0 +1,120 @@
+name: ros_package_build_amd64
+
+on:
+  workflow_call:
+    secrets:
+      PUSH_TOKEN:
+        required: true
+
+  workflow_dispatch:
+
+env:
+  BASE_IMAGE: ctumrs/ros_noetic:2025-02-05
+  BUILDER_IMAGE: noetic_builder_${{github.RUN_ID}}
+  ARTIFACTS_FOLDER: /tmp/artifacts
+  VARIANT: unstable
+  PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
+
+jobs:
+
+  init-artifacts:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: containerized
+          path: ci_scripts
+      - id: init_artifacts
+        run: |
+          mkdir -p ${{env.ARTIFACTS_FOLDER}}
+      - id: prime_image
+        run: |
+          ./ci_scripts/docker/prime_image/prime_image.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}} ${{github.event.repository.name}}
+      - name: Save artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: ${{env.ARTIFACTS_FOLDER}}
+          overwrite: true
+
+  build-job:
+    needs: init-artifacts
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360 # 6 hour timeout
+    steps:
+      - name: Load artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts
+          path: ${{env.ARTIFACTS_FOLDER}}
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: containerized
+          path: ci_scripts
+          token: ${{secrets.PUSH_TOKEN}}
+      - id: build
+        run: |
+          ./ci_scripts/package_build/ros_build/build.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.ARTIFACTS_FOLDER}} $PWD ${{github.event.repository.name}}
+      - name: Delete old artifacts
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: artifacts
+          failOnError: false
+      - name: Save artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: ${{env.ARTIFACTS_FOLDER}}
+          overwrite: true
+
+  collect-artifacts:
+    runs-on: ubuntu-22.04
+    needs: build-job
+    steps:
+      - name: Load artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts
+          path: ${{env.ARTIFACTS_FOLDER}}
+      - id: execute
+        run: |
+          rm ${{env.ARTIFACTS_FOLDER}}/compiled.txt 2> /dev/null || true
+          rm ${{env.ARTIFACTS_FOLDER}}/base_sha.txt 2> /dev/null || true
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: containerized
+          path: ci_scripts
+          token: ${{secrets.PUSH_TOKEN}}
+      - name: Deploy
+        run: ./ci_scripts/package_build/push_to_ppa.sh ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}}
+
+  delete_builder:
+    needs: collect-artifacts
+    if: always()
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Delete old images
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          packages: '${{github.event.repository.name}}'
+          older-than: 7 days
+          keep-n-tagged: 1
+          token: ${{secrets.PUSH_TOKEN}}
