@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  BASE_IMAGE: ctumrs/ros_noetic:2025-02-05
+  BASE_IMAGE: ctumrs/ros_noetic:latest
   BUILDER_IMAGE: noetic_builder_amd_${{github.RUN_ID}}
   ARTIFACTS_FOLDER: /tmp/artifacts
   VARIANT: unstable
