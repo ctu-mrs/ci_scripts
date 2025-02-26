@@ -32,15 +32,15 @@ jobs:
           path: ci_scripts
       - id: init_artifacts
         run: |
-          mkdir -p $ARTIFACTS_FOLDER
+          mkdir -p ${{ARTIFACTS_FOLDER}}
       - id: prime_image
         run: |
-          ./ci_scripts/docker/prime_image/prime_image.sh $BASE_IMAGE $BUILDER_IMAGE $VARIANT $ARTIFACTS_FOLDER ${{ github.event.repository.name }}
+          ./ci_scripts/docker/prime_image/prime_image.sh $BASE_IMAGE $BUILDER_IMAGE $VARIANT ${{ARTIFACTS_FOLDER}} ${{ github.event.repository.name }}
       - name: Save artifacts
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
-          path: $ARTIFACTS_FOLDER
+          path: ${{ARTIFACTS_FOLDER}}
           overwrite: true
 
   build-job:
@@ -52,7 +52,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifacts
-          path: $ARTIFACTS_FOLDER
+          path: ${{ARTIFACTS_FOLDER}}
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -66,7 +66,7 @@ jobs:
           token: ${{ secrets.PUSH_TOKEN }}
       - id: build
         run: |
-          ./ci_scripts/package_build/ros_build/build.sh $BASE_IMAGE $BUILDER_IMAGE $ARTIFACTS_FOLDER $PWD ${{ github.event.repository.name }}
+          ./ci_scripts/package_build/ros_build/build.sh $BASE_IMAGE $BUILDER_IMAGE ${{ARTIFACTS_FOLDER}} $PWD ${{ github.event.repository.name }}
       - name: Delete old artifacts
         uses: geekyeggo/delete-artifact@v5
         with:
@@ -76,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
-          path: $ARTIFACTS_FOLDER
+          path: ${{ARTIFACTS_FOLDER}}
           overwrite: true
 
   collect-artifacts:
@@ -87,11 +87,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifacts
-          path: $ARTIFACTS_FOLDER
+          path: ${{ARTIFACTS_FOLDER}}
       - id: execute
         run: |
-          rm $ARTIFACTS_FOLDER/compiled.txt 2> /dev/null || true
-          rm $ARTIFACTS_FOLDER/base_sha.txt 2> /dev/null || true
+          rm ${{ARTIFACTS_FOLDER}}/compiled.txt 2> /dev/null || true
+          rm ${{ARTIFACTS_FOLDER}}/base_sha.txt 2> /dev/null || true
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -104,7 +104,7 @@ jobs:
           path: ci_scripts
           token: ${{ secrets.PUSH_TOKEN }}
       - name: Deploy
-        run: ./ci_scripts/package_build/push_to_ppa.sh $VARIANT $ARTIFACTS_FOLDER
+        run: ./ci_scripts/package_build/push_to_ppa.sh $VARIANT ${{ARTIFACTS_FOLDER}}
 
   delete_builder:
     needs: collect-artifacts
