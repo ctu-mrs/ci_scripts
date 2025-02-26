@@ -20,18 +20,14 @@ ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
 ## | ------------------------ arguments----------------------- |
 
-LIST=$1
-VARIANT=$2
-REPOSITORY_NAME=$3
-DOCKER_IMAGE=$4
-ARTIFACTS_FOLDER=$5
+REPOSITORY_NAME=$1
+DOCKER_IMAGE=$2
+ARTIFACTS_FOLDER=$3
 
 [ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
 
 # defaults for testing
 
-[ -z $LIST ] && LIST=mrs
-[ -z $VARIANT ] && VARIANT=unstable
 [ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
