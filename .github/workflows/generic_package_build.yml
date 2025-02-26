@@ -9,6 +9,7 @@ on:
   workflow_dispatch:
 
 env:
+  RUNS_ON: ubuntu-22.04
   BASE_IMAGE: ctumrs/ros_noetic:2025-02-05
   BUILDER_IMAGE: noetic_builder_${{github.RUN_ID}}
   ARTIFACTS_FOLDER: /tmp/artifacts
@@ -18,7 +19,7 @@ env:
 jobs:
 
   init-artifacts:
-    runs-on: ubuntu-22.04
+    runs-on: ${{env.RUNS_ON}}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -45,7 +46,7 @@ jobs:
 
   build-job:
     needs: init-artifacts
-    runs-on: ubuntu-22.04
+    runs-on: ${{env.RUNS_ON}}
     timeout-minutes: 360 # 6 hour timeout
     steps:
       - name: Load artifacts
@@ -80,7 +81,7 @@ jobs:
           overwrite: true
 
   collect-artifacts:
-    runs-on: ubuntu-22.04
+    runs-on: ${{env.RUNS_ON}}
     needs: build-job
     steps:
       - name: Load artifacts
@@ -109,7 +110,7 @@ jobs:
   delete_builder:
     needs: collect-artifacts
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ${{env.RUNS_ON}}
     steps:
       - name: Delete old images
         uses: dataaxiom/ghcr-cleanup-action@v1
