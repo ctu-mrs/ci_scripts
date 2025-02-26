@@ -114,15 +114,10 @@ jobs:
     env:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
     steps:
-      - name: Delete current image
-        uses: dataaxiom/ghcr-cleanup-action@v1
-        with:
-          packages: '${{ github.event.repository.name }}'
-          delete-tags: 'noetic_builder_${{ github.RUN_ID }}'
-          token: ${{ secrets.PUSH_TOKEN }}
       - name: Delete old images
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
           packages: '${{ github.event.repository.name }}'
           older-than: 7 days
+          keep-n-tagged: 1
           token: ${{ secrets.PUSH_TOKEN }}
