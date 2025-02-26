@@ -30,7 +30,7 @@ jobs:
           mkdir -p /tmp/artifacts
       - id: prime_image
         run: |
-          ./ci_scripts/docker/prime_image/prime_image.sh ctumrs/ros_noetic:2025-02-05 noetic_builder_${{ github.RUN_ID }} unstable ${{ github.event.repository.name }}
+          ./ci_scripts/docker/prime_image/prime_image.sh ctumrs/ros_noetic:2025-02-05 noetic_builder_${{ github.RUN_ID }} unstable /tmp/artifacts ${{ github.event.repository.name }}
       - name: Save artifacts
         uses: actions/upload-artifact@v4
         with:
