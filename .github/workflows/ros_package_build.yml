@@ -8,12 +8,17 @@ on:
 
   workflow_dispatch:
 
+env:
+  BASE_IMAGE: ctumrs/ros_noetic:2025-02-05
+  BUILDER_IMAGE: noetic_builder_${{ github.RUN_ID }}
+  ARTIFACTS_FOLDER: /tmp/artifacts
+  VARIANT: unstable
+  PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+
 jobs:
 
   init-artifacts:
     runs-on: ubuntu-22.04
-    env:
-      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -27,30 +32,27 @@ jobs:
           path: ci_scripts
       - id: init_artifacts
         run: |
-          mkdir -p /tmp/artifacts
+          mkdir -p $ARTIFACTS_FOLDER
       - id: prime_image
         run: |
-          ./ci_scripts/docker/prime_image/prime_image.sh ctumrs/ros_noetic:2025-02-05 noetic_builder_${{ github.RUN_ID }} unstable /tmp/artifacts ${{ github.event.repository.name }}
+          ./ci_scripts/docker/prime_image/prime_image.sh $BASE_IMAGE $BUILDER_IMAGE $VARIANT $ARTIFACTS_FOLDER ${{ github.event.repository.name }}
       - name: Save artifacts
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
-          path: /tmp/artifacts/
+          path: $ARTIFACTS_FOLDER
           overwrite: true
 
   build-job:
     needs: init-artifacts
     runs-on: ubuntu-22.04
     timeout-minutes: 360 # 6 hour timeout
-    env:
-      TOKEN: ${{ secrets.DOCKERHUB }}
-      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
     steps:
       - name: Load artifacts
         uses: actions/download-artifact@v4
         with:
           name: artifacts
-          path: /tmp/artifacts/
+          path: $ARTIFACTS_FOLDER
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -64,8 +66,7 @@ jobs:
           token: ${{ secrets.PUSH_TOKEN }}
       - id: build
         run: |
-          ./ci_scripts/package_build/ros_build/build.sh ctumrs/ros_noetic:2025-02-05 noetic_builder_${{ github.RUN_ID }} /tmp/artifacts $PWD ${{ github.event.repository.name }}
-          ls /tmp/artifacts
+          ./ci_scripts/package_build/ros_build/build.sh $BASE_IMAGE $BUILDER_IMAGE $ARTIFACTS_FOLDER $PWD ${{ github.event.repository.name }}
       - name: Delete old artifacts
         uses: geekyeggo/delete-artifact@v5
         with:
@@ -75,24 +76,22 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
-          path: /tmp/artifacts/
+          path: $ARTIFACTS_FOLDER
           overwrite: true
 
   collect-artifacts:
     runs-on: ubuntu-22.04
     needs: build-job
-    env:
-      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
     steps:
       - name: Load artifacts
         uses: actions/download-artifact@v4
         with:
           name: artifacts
-          path: /tmp/artifacts/
+          path: $ARTIFACTS_FOLDER
       - id: execute
         run: |
-          rm /tmp/artifacts/compiled.txt 2> /dev/null || true
-          rm /tmp/artifacts/base_sha.txt 2> /dev/null || true
+          rm $ARTIFACTS_FOLDER/compiled.txt 2> /dev/null || true
+          rm $ARTIFACTS_FOLDER/base_sha.txt 2> /dev/null || true
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -105,14 +104,12 @@ jobs:
           path: ci_scripts
           token: ${{ secrets.PUSH_TOKEN }}
       - name: Deploy
-        run: ./ci_scripts/package_build/push_to_ppa.sh unstable /tmp/artifacts
+        run: ./ci_scripts/package_build/push_to_ppa.sh $VARIANT $ARTIFACTS_FOLDER
 
   delete_builder:
     needs: collect-artifacts
     if: always()
     runs-on: ubuntu-latest
-    env:
-      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
     steps:
       - name: Delete old images
         uses: dataaxiom/ghcr-cleanup-action@v1
