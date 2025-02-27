@@ -88,7 +88,7 @@ mkdir -p /tmp/other_files
 cp $ARTIFACTS_FOLDER/base_sha.txt /tmp/other_files/base_sha.txt
 cp $MY_PATH/entrypoint.sh /tmp/other_files/entrypoint.sh
 
-$REPO_PATH/helpers/get_build_order.py /tmp/repository > /tmp/other_files/build_order.txt
+$REPO_PATH/helpers/get_package_build_order.py /tmp/repository > /tmp/other_files/build_order.txt
 
 echo "$0:"
 echo "$0: builder order:"
