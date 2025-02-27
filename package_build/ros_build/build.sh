@@ -27,8 +27,8 @@ REPOSITORY_NAME=$5
 [ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_noetic:2025-02-05
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/mrs_uav_core/ros_packages/.gitman/mrs_lib
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
+[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/mav_comm
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mav_comm
 
 ## | ---------------------- derived args ---------------------- |
 
@@ -87,6 +87,13 @@ mkdir -p /tmp/other_files
 
 cp $ARTIFACTS_FOLDER/base_sha.txt /tmp/other_files/base_sha.txt
 cp $MY_PATH/entrypoint.sh /tmp/other_files/entrypoint.sh
+
+$REPO_PATH/helpers/get_build_order.py /tmp/repository > /tmp/other_files/build_order.txt
+
+echo "$0:"
+echo "$0: builder order:"
+cat /tmp/other_files/build_order.txt
+echo "$0: "
 
 ## | ---------------------- run the test ---------------------- |
 
