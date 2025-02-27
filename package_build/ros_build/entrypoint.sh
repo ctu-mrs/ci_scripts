@@ -29,8 +29,13 @@ git config --global --add safe.directory /etc/docker/repository
 BUILD_ORDER=$(cat /etc/docker/other_files/build_order.txt)
 
 echo ""
-echo "$0: catkin reported following topological build order:"
+echo "$0: build order:"
 echo "$BUILD_ORDER"
+echo ""
+
+echo ""
+echo "$0: catkin list"
+catkin list
 echo ""
 
 ROSDEP_FILE=/tmp/rosdep.yaml

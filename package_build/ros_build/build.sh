@@ -27,8 +27,8 @@ REPOSITORY_NAME=$5
 [ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_noetic:2025-02-05
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/mav_comm
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mav_comm
+[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/px4_sitl_gazebo
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=px4_sitl_gazebo
 
 ## | ---------------------- derived args ---------------------- |
 

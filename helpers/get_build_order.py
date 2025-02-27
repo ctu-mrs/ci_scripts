@@ -30,7 +30,7 @@ def find_packages(root_dir):
 
         if "package.xml" in files:
 
-            if "CATKIN_IGNORE" in files:
+            if os.path.exists(os.path.join(subdir, "CATKIN_IGNORE")):
                 continue
 
             package_path = os.path.join(subdir, "package.xml")
