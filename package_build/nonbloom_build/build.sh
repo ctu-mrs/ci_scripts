@@ -67,8 +67,6 @@ if ! $RUN_LOCALLY; then
 
 fi
 
-TRANSPORT_IMAGE=alpine:latest
-
 docker buildx use default
 
 echo "$0: loading cached builder docker image"

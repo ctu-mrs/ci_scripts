@@ -39,7 +39,7 @@ echo "$0: REPOSITORY_NAME=$REPOSITORY_NAME"
 [ -z $OUTPUT_IMAGE ] && OUTPUT_IMAGE=noetic_builder
 [ -z $PPA_VARIANT ] && PPA_VARIANT=unstable
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=buildfarm
 
 ## | ---------------------- docker build ---------------------- |
 
