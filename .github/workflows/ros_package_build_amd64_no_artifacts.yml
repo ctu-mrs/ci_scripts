@@ -1,0 +1,82 @@
+name: ros_package_build_amd64
+
+on:
+  workflow_call:
+    secrets:
+      PUSH_TOKEN:
+        required: true
+
+  workflow_dispatch:
+
+env:
+  BASE_IMAGE: ctumrs/ros_noetic:latest
+  BUILDER_IMAGE: noetic_builder_amd_${{github.RUN_ID}}
+  ARTIFACTS_FOLDER: /tmp/artifacts
+  VARIANT: unstable
+  PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
+
+jobs:
+
+  init-artifacts:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: master
+          path: ci_scripts
+      - id: init_artifacts
+        run: |
+          mkdir -p ${{env.ARTIFACTS_FOLDER}}
+      - id: prime_image
+        run: |
+          ./ci_scripts/docker/prime_image/prime_image.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}} ${{github.event.repository.name}}
+      - name: Save artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: ${{env.ARTIFACTS_FOLDER}}
+          overwrite: true
+
+  build-job:
+    needs: init-artifacts
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360 # 6 hour timeout
+    steps:
+      - name: Load artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts
+          path: ${{env.ARTIFACTS_FOLDER}}
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: master
+          path: ci_scripts
+          token: ${{secrets.PUSH_TOKEN}}
+      - id: build
+        run: |
+          ./ci_scripts/package_build/ros_build/build.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.ARTIFACTS_FOLDER}} $PWD ${{github.event.repository.name}}
+
+  delete_builder:
+    needs: build-job
+    if: always()
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Delete old images
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          packages: '${{github.event.repository.name}}'
+          older-than: 7 days
+          keep-n-tagged: 1
+          token: ${{secrets.PUSH_TOKEN}}
