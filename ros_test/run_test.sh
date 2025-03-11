@@ -91,7 +91,7 @@ fi
 
 echo "$0: cloning the package"
 
-THIS_TEST_REPOS=$($REPO_PATH/scripts/helpers/get_repo_source.py $YAML_FILE $VARIANT $ARCH $REPOSITORY_NAME)
+THIS_TEST_REPOS=$($REPO_PATH/ci_scripts/helpers/get_repo_source.py $YAML_FILE $VARIANT $ARCH $REPOSITORY_NAME)
 
 echo "$THIS_TEST_REPOS" | while IFS= read -r REPO; do
 
