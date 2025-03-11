@@ -5,7 +5,7 @@ set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
-PPA=github.com/ctu-mrs/ppa-$1.git
+PPA=github.com/ctu-mrs/ppa2-$1.git
 FROM_FOLDER=$2
 
 echo "$0: Deploying debs from $2 package to $PPA"
