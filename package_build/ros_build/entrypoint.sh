@@ -11,18 +11,8 @@ ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 ##########################
 
 DEBS_FOLDER=/etc/docker/debs
+REPO_FOLDER=/etc/docker/repository
 OTHER_FILES_FOLDER=/etc/docker/other_files
-
-WORKSPACE=/etc/docker/workspace
-mkdir -p $WORKSPACE/src
-cd $WORKSPACE
-source /opt/ros/noetic/setup.bash
-catkin init
-
-cd src
-ln -s /etc/docker/repository
-
-ls -la /etc/docker/repository
 
 git config --global --add safe.directory /etc/docker/repository
 
@@ -33,38 +23,34 @@ echo "$0: build order:"
 echo "$BUILD_ORDER"
 echo ""
 
-echo ""
-echo "$0: catkin list"
-catkin list
-echo ""
-
 ROSDEP_FILE=/tmp/rosdep.yaml
 touch $ROSDEP_FILE
 echo "yaml file://$ROSDEP_FILE" | tee /etc/ros/rosdep/sources.list.d/temp.list
 
-for PACKAGE in $BUILD_ORDER; do
+OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
 
-  PKG_PATH=$(catkin locate $PACKAGE)
+  PACKAGE=$(echo $LINE | awk '{print $1}')
+  PKG_PATH=$(echo $LINE | awk '{print $2}')
 
-  echo "$0: cding to '$PKG_PATH'"
-  cd $PKG_PATH
+  echo "$0: cding to '$REPO_FOLDER/$PKG_PATH'"
+  cd $REPO_FOLDER/$PKG_PATH
 
-  FUTURE_DEB_NAME=$(echo "ros-noetic-$PACKAGE" | sed 's/_/-/g')
+  FUTURE_DEB_NAME=$(echo "ros-jazzy-$PACKAGE" | sed 's/_/-/g')
 
   echo "$0: future deb name: $FUTURE_DEB_NAME"
 
   SHA=$(git rev-parse --short HEAD)
   DOCKER_SHA=$(cat $OTHER_FILES_FOLDER/base_sha.txt)
 
-  ## don't run if CATKIN_IGNORE is present
+  ## don't run if COLCON_IGNORE is present
 
-  [ -e $PKG_PATH/CATKIN_IGNORE ] && continue
+  [ -e $PKG_PATH/COLCON_IGNORE ] && continue
 
   apt-get -y update
 
-  rosdep install -y -v --rosdistro=noetic --dependency-types=build --from-paths ./
+  rosdep install -y -v --rosdistro=jazzy --dependency-types=build --from-paths ./
 
-  source /opt/ros/noetic/setup.bash
+  source /opt/ros/jazzy/setup.bash
 
   echo "$0: Running bloom on a package in '$PKG_PATH'"
 
@@ -72,7 +58,7 @@ for PACKAGE in $BUILD_ORDER; do
     export DEB_BUILD_OPTIONS="parallel=`nproc`"
   fi
 
-  bloom-generate rosdebian --os-name ubuntu --os-version focal --ros-distro noetic
+  bloom-generate rosdebian --os-name ubuntu --os-version noble --ros-distro jazzy
 
   epoch=2
 
@@ -86,8 +72,6 @@ for PACKAGE in $BUILD_ORDER; do
   else
     fakeroot debian/rules "binary"
   fi
-
-  FIND_METAPACKAGE=$(cat CMakeLists.txt | grep -e "^catkin_metapackage" | wc -l)
 
   DEB_NAME=$(dpkg --field ../*.deb | grep "Package:" | head -n 1 | awk '{print $2}')
 
@@ -105,7 +89,7 @@ for PACKAGE in $BUILD_ORDER; do
 
   rosdep update
 
-  source /opt/ros/noetic/setup.bash
+  source /opt/ros/jazzy/setup.bash
 
   echo "$PACKAGE" >> $OTHER_FILES_FOLDER/compiled.txt
 

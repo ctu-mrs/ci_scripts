@@ -24,11 +24,11 @@ REPOSITORY_NAME=$5
 
 # default for testing
 
-[ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_noetic:2025-02-05
-[ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
+[ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_jazzy:latest
+[ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=jazzy_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/px4_sitl_gazebo
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=px4_sitl_gazebo
+[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/ws/src/mrs_msgs
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=ros2_examples
 
 ## | ---------------------- derived args ---------------------- |
 

@@ -13,8 +13,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install keyboard-configuration
 
 RUN apt-get -y install software-properties-common curl bash
 
-RUN curl https://ctu-mrs.github.io/ppa-${PPA_VARIANT}/add_ppa.sh | bash
+RUN curl https://ctu-mrs.github.io/ppa2-${PPA_VARIANT}/add_ppa.sh | bash
 
-RUN apt-get -y install ros-noetic-catkin python3-catkin-tools fakeroot debhelper python3-pip dpkg-dev git lcov aptitude
+RUN apt-get -y install python3-bloom python3-rosdep fakeroot debhelper dh-python dpkg-dev git lcov aptitude
 
-RUN pip3 install -U bloom

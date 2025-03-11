@@ -3,7 +3,6 @@
 import os
 import xml.etree.ElementTree as ET
 from collections import defaultdict, deque
-import copy
 import re
 import graphlib
 
@@ -32,6 +31,7 @@ def find_packages(root_dir):
 
     packages_set = set()
     packages_dependencies = {}
+    packages_paths = {}
     pruned_depenencies = {}
 
     for subdir, _, files in os.walk(root_dir):
@@ -52,6 +52,8 @@ def find_packages(root_dir):
             name_elem = root.find("name")
 
             package_name = name_elem.text.strip()
+
+            packages_paths[package_name] = os.path.relpath(subdir, root_dir)
 
             if package_name in ignore_packages:
                 continue
@@ -82,18 +84,18 @@ def find_packages(root_dir):
 
         pruned_depenencies[package] = dependencies
     
-    return pruned_depenencies
+    return pruned_depenencies, packages_paths
 
 def main(root_dir):
 
-    packages = find_packages(root_dir)
+    packages, packages_paths = find_packages(root_dir)
 
     ts = graphlib.TopologicalSorter(packages)
 
     ordered_list = [*tuple(ts.static_order())]
 
     for package in ordered_list:
-        print(package)
+        print("{} {}".format(package, packages_paths[package]))
 
 if __name__ == "__main__":
     import sys
