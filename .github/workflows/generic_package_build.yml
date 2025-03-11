@@ -11,11 +11,11 @@ on:
 jobs:
 
   build_amd64:
-    uses: ctu-mrs/ci_scripts/.github/workflows/generic_package_build_amd64.yml@master
+    uses: ctu-mrs/ci_scripts/.github/workflows/generic_package_build_amd64.yml@ros2
     secrets:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
 
   build_arm64:
-    uses: ctu-mrs/ci_scripts/.github/workflows/generic_package_build_arm64.yml@master
+    uses: ctu-mrs/ci_scripts/.github/workflows/generic_package_build_arm64.yml@ros2
     secrets:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
