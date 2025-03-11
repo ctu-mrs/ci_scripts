@@ -58,8 +58,8 @@ echo "$0: loading cached builder docker image"
 
 if ! $RUN_LOCALLY; then
 
-  docker pull ghcr.io/ctu-mrs/buildfarm:$DOCKER_IMAGE
-  docker tag ghcr.io/ctu-mrs/buildfarm:$DOCKER_IMAGE $DOCKER_IMAGE
+  docker pull ghcr.io/ctu-mrs/buildfarm2:$DOCKER_IMAGE
+  docker tag ghcr.io/ctu-mrs/buildfarm2:$DOCKER_IMAGE $DOCKER_IMAGE
 
 fi
 

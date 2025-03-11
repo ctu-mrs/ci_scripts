@@ -23,11 +23,11 @@ PPA_VARIANT=$3
 ARTIFACT_FOLDER=$4
 REPOSITORY_NAME=$5
 
-[ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_noetic:2025-02-05
-[ -z $OUTPUT_IMAGE ] && OUTPUT_IMAGE=noetic_builder
+[ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_jazzy:latest
+[ -z $OUTPUT_IMAGE ] && OUTPUT_IMAGE=jazzy_builder
 [ -z $PPA_VARIANT ] && PPA_VARIANT=unstable
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=buildfarm2
 
 [ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
 

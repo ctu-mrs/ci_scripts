@@ -39,7 +39,7 @@ echo "$0: REPOSITORY_NAME=$REPOSITORY_NAME"
 [ -z $OUTPUT_IMAGE ] && OUTPUT_IMAGE=jazzy_builder
 [ -z $PPA_VARIANT ] && PPA_VARIANT=unstable
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=buildfarm
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=buildfarm2
 
 ## | ---------------------- docker build ---------------------- |
 
