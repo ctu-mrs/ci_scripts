@@ -24,11 +24,11 @@ REPOSITORY_NAME=$5
 
 # default for testing
 
-[ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_noetic:2025-02-05
-[ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
+[ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_jazzy:latest
+[ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=jazzy_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/mrs/nonbloom/libcamera_ros
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=libcamera_ros
+[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/mrs_uav_shell_additions
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_uav_shell_additions
 
 ## | ---------------------- derived args ---------------------- |
 

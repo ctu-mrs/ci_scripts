@@ -19,11 +19,11 @@ if [ ! -e $WORKSPACE/devel ]; then
 
   cd $WORKSPACE
 
-  source /opt/ros/noetic/setup.bash
-  catkin init
+  source /opt/ros/jazzy/setup.bash
+  colcon build
 
-  catkin config --profile debug --cmake-args -DCMAKE_BUILD_TYPE=Debug
-  catkin profile set debug
+  # catkin config --profile debug --cmake-args -DCMAKE_BUILD_TYPE=Debug
+  # catkin profile set debug
 
   echo "$0: installing dependencies using rosdep"
 
@@ -37,22 +37,18 @@ echo "$0: building the workspace"
 
 cd $WORKSPACE
 
-catkin build --limit-status-rate 0.2 --cmake-args -DCOVERAGE=true -DMRS_ENABLE_TESTING=true
-catkin build --limit-status-rate 0.2 --cmake-args -DCOVERAGE=true -DMRS_ENABLE_TESTING=true --catkin-make-args tests
+colcon build
 
 source $WORKSPACE/devel/setup.bash
 
 ## | --- run tests an all ros packages within the repository -- |
 
 cd $WORKSPACE/src/$REPOSITORY_NAME
-ROS_DIRS=$(find . -name package.xml -printf "%h\n")
-
 FAILED=0
 
-for DIR in $ROS_DIRS; do
-  cd $WORKSPACE/src/$REPOSITORY_NAME/$DIR
-  catkin test --limit-status-rate 0.2 --this -p 1 -s || FAILED=1
-done
+colcon test --base-paths $WORKSPACE/src/$REPOSITORY_NAME || FAILED=1
+
+colcon test-result --all --verbose
 
 echo "$0: tests finished"
 

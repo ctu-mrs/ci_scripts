@@ -29,7 +29,7 @@ ARTIFACTS_FOLDER=$3
 # defaults for testing
 
 [ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
-[ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
+[ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=jazzy_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
 
 ## | -------------------- derived variables ------------------- |
