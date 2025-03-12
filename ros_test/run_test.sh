@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# ./run_tests.sh <repository list> <variant> <repository>
+# ./run_tests.sh <repository path> <docker image>
 #
 
 set -e
@@ -13,24 +13,28 @@ trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 MY_PATH=`dirname "$0"`
 MY_PATH=`( cd "$MY_PATH" && pwd )`
 
-REPO_PATH=${MY_PATH}/../..
+REPO_PATH=${MY_PATH}/..
 
 # determine our architecture
 ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
 ## | ------------------------ arguments----------------------- |
 
-REPOSITORY_NAME=$1
+SOURCES_PATH=$1
 DOCKER_IMAGE=$2
-ARTIFACTS_FOLDER=$3
+REPOSITORY_NAME=$3
 
 [ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
 
 # defaults for testing
 
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
-[ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
+[ -z $SOURCES_PATH ] && SOURCES_PATH=~/ws/src/mrs_lib
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
+
+echo "SOURCES_PATH=$SOURCES_PATH"
+echo "DOCKER_IMAGE=$DOCKER_IMAGE"
+echo "REPOSITORY_NAME=$REPOSITORY_NAME"
 
 ## | -------------------- derived variables ------------------- |
 
@@ -42,7 +46,7 @@ WORKSPACE_FOLDER=/tmp/workspace
 ## |                  prepare the tester image                  |
 ## --------------------------------------------------------------
 
-$REPO_PATH/ci_scripts/helpers/wait_for_docker.sh
+$REPO_PATH/helpers/wait_for_docker.sh
 
 if ! $RUN_LOCALLY; then
 
@@ -58,8 +62,8 @@ echo "$0: loading cached builder docker image"
 
 if ! $RUN_LOCALLY; then
 
-  docker pull ghcr.io/ctu-mrs/buildfarm:$DOCKER_IMAGE
-  docker tag ghcr.io/ctu-mrs/buildfarm:$DOCKER_IMAGE $DOCKER_IMAGE
+  docker pull ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE
+  docker tag ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE $DOCKER_IMAGE
 
 fi
 
@@ -69,69 +73,32 @@ echo "$0: image loaded"
 ## |                    prepare the workspace                   |
 ## --------------------------------------------------------------
 
-mkdir -p $WORKSPACE_FOLDER
+## | ---------------------- create the ws --------------------- |
 
-if [ -e $ARTIFACT_FOLDER/workspace.tar.gz ]; then
+echo "$0: creating the workspace"
 
-  echo "$0: workspace passed from the job before"
-
-  mv $ARTIFACT_FOLDER/workspace.tar.gz $WORKSPACE_FOLDER
-  cd $WORKSPACE_FOLDER
-  tar -xvzf workspace.tar.gz
-
-else
-
-  echo "$0: creating the workspace"
-
-  mkdir -p $WORKSPACE_FOLDER/src
-
+if [ -e $WORKSPACE_FOLDER ]; then
+  sudo rm -rf $WORKSPACE_FOLDER
 fi
 
-## | ---------------- clone the tested package ---------------- |
+mkdir -p $WORKSPACE_FOLDER/src/repository
 
-echo "$0: cloning the package"
+## | -------------------- update submodules ------------------- |
 
-THIS_TEST_REPOS=$($REPO_PATH/scripts/helpers/get_repo_source.py $YAML_FILE $VARIANT $ARCH $REPOSITORY_NAME)
+git submodule update --init --recursive
 
-echo "$THIS_TEST_REPOS" | while IFS= read -r REPO; do
+[[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install || echo "no gitman modules to install"
 
-  cd $WORKSPACE_FOLDER/src
-
-  PACKAGE=$(echo "$REPO" | awk '{print $1}')
-  URL=$(echo "$REPO" | awk '{print $2}')
-  BRANCH=$(echo "$REPO" | awk '{print $3}')
-  GITMAN=$(echo "$REPO" | awk '{print $4}')
-
-  [ ! -e ${PACKAGE} ] && echo "$0: cloning '$URL --depth 1 --branch $BRANCH' into '$PACKAGE'" || echo "$0: not cloning, already there"
-  [ ! -e ${PACKAGE} ] && git clone $URL --recurse-submodules --shallow-submodules --depth 1 --branch $BRANCH $PACKAGE || echo "$0: not cloning, already there"
-
-  if [[ "$GITMAN" == "True" ]]; then
-    cd $PACKAGE
-    [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install || echo "no gitman modules to install"
-  fi
-
-  echo "$0: repository cloned"
-
-done
+cp -r $SOURCES_PATH/* $WORKSPACE_FOLDER/src/repository
 
 ## | ----------------- copy the testing script ---------------- |
 
 cp $MY_PATH/entrypoint.sh $WORKSPACE_FOLDER/
-
-## | -------------------- enable core dumps ------------------- |
-
-sudo sysctl -w kernel.core_pattern="/tmp/coredumps/%e_%p.core"
-ulimit -c unlimited
 
 ## | ---------------------- run the test ---------------------- |
 
 docker run \
   --rm \
   -v $WORKSPACE_FOLDER:/etc/docker/workspace \
-  -v /tmp/coredumps:/etc/docker/coredumps \
-  -v /tmp/coverage:/etc/docker/coverage \
   $DOCKER_IMAGE \
   /bin/bash -c "/etc/docker/workspace/entrypoint.sh $REPOSITORY_NAME"
-
-# move the generated coverage data
-cp -r /tmp/coverage/* /tmp/artifacts
