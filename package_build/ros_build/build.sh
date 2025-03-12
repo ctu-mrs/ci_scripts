@@ -27,8 +27,8 @@ REPOSITORY_NAME=$5
 [ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_jazzy:latest
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=jazzy_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/ws/src/mrs_msgs
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=ros2_examples
+[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/ws/src/nlopt_ros
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=nlopt_ros
 
 ## | ---------------------- derived args ---------------------- |
 

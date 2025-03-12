@@ -1,0 +1,70 @@
+name: ros_package_build_amd64
+
+on:
+  workflow_call:
+    secrets:
+      PUSH_TOKEN:
+        required: true
+
+  workflow_dispatch:
+
+env:
+  BASE_IMAGE: ctumrs/ros_jazzy:latest
+  BUILDER_IMAGE: jazzy_builder_amd_${{github.RUN_ID}}
+  ARTIFACTS_FOLDER: /tmp/artifacts
+  VARIANT: unstable
+  PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
+
+jobs:
+
+  prime-image:
+    runs-on: ubuntu-22.04
+    env:
+      PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: ros2
+          path: ci_scripts
+      - id: prime_image
+        run: |
+          ./ci_scripts/docker/prime_image_testing/prime_image.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}} ${{github.event.repository.name}}
+
+  test-job:
+    needs: prime-image
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360 # 6 hour timeout
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: ros2
+          path: ci_scripts
+          token: ${{secrets.PUSH_TOKEN}}
+      - id: build
+        run: |
+          ./ci_scripts/ros_test/run_test.sh $pwd ${{env.BASE_IMAGE}}
+
+  delete_builder:
+    needs: test-job
+    if: always()
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Delete old images
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          packages: '${{github.event.repository.name}}'
+          older-than: 7 days
+          keep-n-tagged: 1
+          token: ${{secrets.PUSH_TOKEN}}
