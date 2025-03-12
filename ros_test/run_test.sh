@@ -32,6 +32,10 @@ REPOSITORY_NAME=$3
 [ -z $SOURCES_PATH ] && SOURCES_PATH=~/ws/src/mrs_lib
 [ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
 
+echo "SOURCES_PATH=$SOURCES_PATH"
+echo "DOCKER_IMAGE=$DOCKER_IMAGE"
+echo "REPOSITORY_NAME=$REPOSITORY_NAME"
+
 ## | -------------------- derived variables ------------------- |
 
 YAML_FILE=${REPO_PATH}/${LIST}.yaml
