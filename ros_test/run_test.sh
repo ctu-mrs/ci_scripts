@@ -22,6 +22,7 @@ ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
 SOURCES_PATH=$1
 DOCKER_IMAGE=$2
+REPOSITORY_NAME=$3
 
 [ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
 
@@ -29,6 +30,7 @@ DOCKER_IMAGE=$2
 
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=jazzy_builder
 [ -z $SOURCES_PATH ] && SOURCES_PATH=~/ws/src/mrs_lib
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
 
 ## | -------------------- derived variables ------------------- |
 
@@ -56,8 +58,8 @@ echo "$0: loading cached builder docker image"
 
 if ! $RUN_LOCALLY; then
 
-  docker pull ghcr.io/ctu-mrs/buildfarm2:$DOCKER_IMAGE
-  docker tag ghcr.io/ctu-mrs/buildfarm2:$DOCKER_IMAGE $DOCKER_IMAGE
+  docker pull ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE
+  docker tag ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE $DOCKER_IMAGE
 
 fi
 
