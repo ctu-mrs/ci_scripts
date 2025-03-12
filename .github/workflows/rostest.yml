@@ -54,7 +54,7 @@ jobs:
           token: ${{secrets.PUSH_TOKEN}}
       - id: build
         run: |
-          ./ci_scripts/ros_test/run_test.sh $PWD ${{env.BASE_IMAGE}} ${{github.event.repository.name}}
+          ./ci_scripts/ros_test/run_test.sh $PWD ${{env.BUILDER_IMAGE}} ${{github.event.repository.name}}
 
   delete_builder:
     needs: test-job
