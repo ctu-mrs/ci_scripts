@@ -24,11 +24,11 @@ REPOSITORY_NAME=$5
 
 # default for testing
 
-[ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_noetic:2025-02-05
+[ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_noetic:latest
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/mrs_msgs
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_msgs
+[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/webrtc
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=webrtc
 
 ## | ---------------------- derived args ---------------------- |
 
