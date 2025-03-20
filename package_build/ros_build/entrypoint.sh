@@ -63,6 +63,11 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
 
   build_flag="$(date +%Y%m%d.%H%M%S)~on.push.build.git.$SHA.base.$DOCKER_SHA"
 
+  ## skip dh_strip errors
+  echo "override_dh_strip:
+	dh_strip || true
+" >> debian/rules
+
   sed -i "s/(/($epoch:/" ./debian/changelog
   sed -i "s/)/.${build_flag})/" ./debian/changelog
 
