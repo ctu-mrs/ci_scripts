@@ -47,7 +47,7 @@ git submodule update --init --recursive
 
 if [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ; then
 
-  pipx install gitman
+  pipx install gitman==3.5.2
   gitman install
 
 fi
