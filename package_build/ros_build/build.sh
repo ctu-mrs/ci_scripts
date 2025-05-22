@@ -27,13 +27,14 @@ REPOSITORY_NAME=$5
 [ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_noetic:latest
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=noetic_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/git/webrtc
+[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/vojta/git/webrtc
 [ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=webrtc
 
 ## | ---------------------- derived args ---------------------- |
 
 # determine our architecture
 ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
+ARCH="arm64"
 
 ROSDEP_FILE="generated_${LIST}_${ARCH}.yaml"
 
@@ -99,6 +100,7 @@ echo "$0: "
 
 docker run \
   --rm \
+  --platform linux/arm64 \
   -v /tmp/repository:/etc/docker/repository \
   -v /tmp/debs:/etc/docker/debs \
   -v /tmp/other_files:/etc/docker/other_files \
