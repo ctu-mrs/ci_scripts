@@ -27,3 +27,4 @@ jobs:
     uses: ctu-mrs/ci_scripts/.github/workflows/build_repository_docker.yml@ros2
     secrets:
       DOCKERHUB: ${{ secrets.DOCKERHUB }}
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
