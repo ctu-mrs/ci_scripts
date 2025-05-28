@@ -35,7 +35,7 @@ ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
 
 $REPO_PATH/helpers/wait_for_docker.sh
 
-docker buildx use default
+docker buildx create --name container --driver=docker-container --use
 
 if ! $RUN_LOCALLY; then
 
@@ -49,12 +49,4 @@ echo "$0: building the image"
 
 cd $PATH_TO_DOCKER_FOLDER
 
-docker build . --file Dockerfile --build-arg BASE_IMAGE=${BASE_IMAGE} --build-arg PPA_VARIANT=${PPA_VARIANT} --tag ${OUTPUT_IMAGE} --progress plain --no-cache
-
-echo "$0: exporting image"
-
-if ! $RUN_LOCALLY; then
-
-  docker push ${OUTPUT_IMAGE}
-
-fi
+docker buildx build . --file Dockerfile --build-arg BASE_IMAGE=${BASE_IMAGE} --build-arg PPA_VARIANT=${PPA_VARIANT} --tag ${OUTPUT_IMAGE} --progress plain --platform=linux/amd64,linux/arm64 --push
