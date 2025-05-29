@@ -41,7 +41,7 @@ if ! $RUN_LOCALLY; then
 
   echo "$0: logging in to docker registry"
 
-  docker login --username klaxalk --password $TOKEN
+  docker login --username klaxalk --password $DOCKERHUB
 
 fi
 
