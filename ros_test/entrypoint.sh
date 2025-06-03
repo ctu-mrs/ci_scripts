@@ -13,6 +13,8 @@ WORKSPACE=/etc/docker/workspace
 
 echo "$0: installing dependencies using rosdep"
 
+rosdep update --include-eol-distros
+
 rosdep install -y -v --from-path $WORKSPACE/src
 
 cd $WORKSPACE

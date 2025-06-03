@@ -47,6 +47,8 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
 
   apt-get -y update
 
+  rosdep update --include-eol-distros
+
   rosdep install -y -v --rosdistro=noetic --dependency-types=build --from-paths ./
 
   source /opt/ros/noetic/setup.bash
@@ -86,7 +88,7 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
   ubuntu: [$DEB_NAME]
 " >> $ROSDEP_FILE
 
-  rosdep update
+  rosdep update --include-eol-distros
 
   source /opt/ros/noetic/setup.bash
 
