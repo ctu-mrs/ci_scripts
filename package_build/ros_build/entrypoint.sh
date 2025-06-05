@@ -25,6 +25,12 @@ echo ""
 
 ROSDEP_FILE=/tmp/rosdep.yaml
 touch $ROSDEP_FILE
+
+# there needs to be a valid dictionary in the file
+echo "a:
+  ubuntu: [a]
+" >> $ROSDEP_FILE
+
 echo "yaml file://$ROSDEP_FILE" | tee /etc/ros/rosdep/sources.list.d/temp.list
 
 OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
