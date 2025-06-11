@@ -1,0 +1,25 @@
+name: ros_package_build_with_docker_amd64
+
+on:
+  workflow_call:
+    secrets:
+      PUSH_TOKEN:
+        required: true
+      DOCKERHUB:
+        required: true
+
+  workflow_dispatch:
+
+jobs:
+
+  build_amd64:
+    uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_amd64.yml@ros2
+    secrets:
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+
+  build_docker:
+    needs: [build_amd64]
+    uses: ctu-mrs/ci_scripts/.github/workflows/build_repository_docker.yml@ros2
+    secrets:
+      DOCKERHUB: ${{ secrets.DOCKERHUB }}
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
