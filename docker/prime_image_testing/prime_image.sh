@@ -25,7 +25,7 @@ REPOSITORY_NAME=$5
 
 [ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_jazzy:latest
 [ -z $OUTPUT_IMAGE ] && OUTPUT_IMAGE=jazzy_builder
-[ -z $PPA_VARIANT ] && PPA_VARIANT=unstable
+[ -z $PPA_VARIANT ] && PPA_VARIANT=testing
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
 [ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=buildfarm2
 
