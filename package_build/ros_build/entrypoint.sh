@@ -39,6 +39,8 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
 
   echo "$0: future deb name: $FUTURE_DEB_NAME"
 
+  git config --global --add safe.directory $REPO_FOLDER/$PKG_PATH
+
   SHA=$(git rev-parse --short HEAD)
   DOCKER_SHA=$(cat $OTHER_FILES_FOLDER/base_sha.txt)
 
