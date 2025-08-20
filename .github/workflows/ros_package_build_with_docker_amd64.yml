@@ -19,7 +19,7 @@ jobs:
 
   build_docker:
     needs: [build_amd64]
-    uses: ctu-mrs/ci_scripts/.github/workflows/build_repository_docker.yml@ros2
+    uses: ctu-mrs/ci_scripts/.github/workflows/build_repository_docker_amd64.yml@ros2
     secrets:
       DOCKERHUB: ${{ secrets.DOCKERHUB }}
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
