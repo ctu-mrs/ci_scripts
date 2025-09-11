@@ -39,7 +39,7 @@ jobs:
       - name: Save artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: artifacts
+          name: artifacts_arm64
           path: ${{env.ARTIFACTS_FOLDER}}
           overwrite: true
 
@@ -51,7 +51,7 @@ jobs:
       - name: Load artifacts
         uses: actions/download-artifact@v4
         with:
-          name: artifacts
+          name: artifacts_arm64
           path: ${{env.ARTIFACTS_FOLDER}}
       - uses: actions/checkout@v3
         with:
@@ -70,12 +70,12 @@ jobs:
       - name: Delete old artifacts
         uses: geekyeggo/delete-artifact@v5
         with:
-          name: artifacts
+          name: artifacts_arm64
           failOnError: false
       - name: Save artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: artifacts
+          name: artifacts_arm64
           path: ${{env.ARTIFACTS_FOLDER}}
           overwrite: true
 
@@ -86,7 +86,7 @@ jobs:
       - name: Load artifacts
         uses: actions/download-artifact@v4
         with:
-          name: artifacts
+          name: artifacts_arm64
           path: ${{env.ARTIFACTS_FOLDER}}
       - id: execute
         run: |
