@@ -13,7 +13,7 @@ WORKSPACE=/etc/docker/workspace
 
 echo "$0: installing dependencies using rosdep"
 
-rosdep install -y -v --from-path $WORKSPACE/src
+rosdep install -y -v --from-path $WORKSPACE/src || echo "$0: failed to install dependencies using rosdep, the build might fail"
 
 cd $WORKSPACE
 
