@@ -50,7 +50,9 @@ FAILED=0
 
 colcon test-result --delete-yes
 
-colcon test --base-paths $WORKSPACE/src/$REPOSITORY_NAME
+pkgs=$(colcon list -n)
+
+colcon test --executor sequential --ctest-args --packages-select $pkgs
 
 colcon test-result --all --verbose || FAILED=1
 
