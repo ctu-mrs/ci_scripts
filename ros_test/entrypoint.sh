@@ -18,7 +18,7 @@ rosdep install -y -v --from-path $WORKSPACE/src || echo "$0: failed to install d
 cd $WORKSPACE
 
 source /opt/ros/jazzy/setup.bash
-colcon build
+colcon build --cmake-args -DENABLE_TESTS=true --paths $WORKSPACE/src/$REPOSITORY_NAME
 
 source $WORKSPACE/install/setup.bash
 
