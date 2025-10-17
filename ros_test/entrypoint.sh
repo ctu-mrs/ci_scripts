@@ -15,28 +15,15 @@ echo "$0: installing dependencies using rosdep"
 
 rosdep install -y -v --from-path $WORKSPACE/src || echo "$0: failed to install dependencies using rosdep, the build might fail"
 
-## | ---------------- initialize the workspace ---------------- |
-
-if [ ! -e $WORKSPACE/install ]; then
-
-  echo "$0: workspace not initialized, initializing"
-
-  cd $WORKSPACE
-
-  source /opt/ros/jazzy/setup.bash
-  colcon build --symlink-install
-
-fi
-
 ## | -------------------- build the package ------------------- |
 #
 echo "$0: building the workspace"
 
 cd $WORKSPACE
 
-source $WORKSPACE/install/setup.bash
+source /opt/ros/jazzy/setup.bash
 
-colcon build --cmake-args -DENABLE_TESTS=true --paths $WORKSPACE/src/$REPOSITORY_NAME
+colcon build --symlink-install --cmake-args -DENABLE_TESTS=true
 
 source $WORKSPACE/install/setup.bash
 
