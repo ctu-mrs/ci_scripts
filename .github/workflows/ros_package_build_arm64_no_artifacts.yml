@@ -67,7 +67,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ctu-mrs/ci_scripts
-          ref: ros2
+          ref: ros2_tests_enabling
           path: ci_scripts
           token: ${{secrets.PUSH_TOKEN}}
       - id: build
