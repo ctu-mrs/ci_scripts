@@ -54,6 +54,39 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
 
   source /opt/ros/jazzy/setup.bash
 
+  # Tests are run only on demand. Set RUN_TESTS=1 or RUN_TESTS=true (or yes) in the environment to enable.
+  if [ "${RUN_TESTS:-0}" = "1" ] || [[ "${RUN_TESTS:-}" =~ ^(true|yes)$ ]]; then
+    echo "$0: RUN_TESTS enabled; building and testing package '$PACKAGE'"
+
+    # build only the current package; add parallelism on non-arm64
+    if [[ "$ARCH" != "arm64" ]]; then
+      colcon build --packages-select "$PACKAGE" --parallel-workers "$(nproc)" --cmake-args -DCMAKE_BUILD_TYPE=Release
+    else
+      colcon build --packages-select "$PACKAGE" --cmake-args -DCMAKE_BUILD_TYPE=Release
+    fi
+
+    # source install before running tests so runtime environment is set up
+    if [ -f install/setup.bash ]; then
+      source install/setup.bash
+    fi
+
+    echo "$0: Running tests for '$PACKAGE'"
+    set +e # Temporarily DISABLE set -e
+    colcon test --packages-select $PACKAGE --event-handlers console_cohesion+
+    TEST_EXIT_CODE=$? # Capture the exit code immediately
+    set -e # RE-ENABLE set -e
+
+    # print/propagate test results
+    colcon test-result --all --verbose
+
+    # Now you can optionally re-check the exit code and decide what to do
+    if [ $TEST_EXIT_CODE -ne 0 ]; then
+        exit $TEST_EXIT_CODE
+    fi
+  else
+    echo "$0: RUN_TESTS not set; skipping colcon build/test for '$PACKAGE'"
+  fi
+
   echo "$0: Running bloom on a package in '$PKG_PATH'"
 
   if [[ "$ARCH" != "arm64" ]]; then

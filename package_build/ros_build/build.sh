@@ -19,6 +19,7 @@ DOCKER_IMAGE=$2
 ARTIFACTS_FOLDER=$3
 REPOSITORY_FOLDER=$4
 REPOSITORY_NAME=$5
+RUN_TESTS=$6
 
 [ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
 
@@ -27,8 +28,9 @@ REPOSITORY_NAME=$5
 [ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_jazzy:latest
 [ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=jazzy_builder
 [ -z $ARTIFACTS_FOLDER ] && ARTIFACTS_FOLDER=/tmp/artifacts
-[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/klaxalk/ws/src/nlopt_ros
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=nlopt_ros
+[ -z $REPOSITORY_FOLDER ] && REPOSITORY_FOLDER=/home/vojta/git/mrs_uav_gazebo_simulation
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_uav_gazebo_simulation
+[ -z $RUN_TESTS ] && RUN_TESTS=true
 
 ## | ---------------------- derived args ---------------------- |
 
@@ -102,6 +104,7 @@ docker run \
   -v /tmp/repository:/etc/docker/repository \
   -v /tmp/debs:/etc/docker/debs \
   -v /tmp/other_files:/etc/docker/other_files \
+  -e RUN_TESTS=$RUN_TESTS \
   $DOCKER_IMAGE \
   /bin/bash -c "/etc/docker/other_files/entrypoint.sh"
 
