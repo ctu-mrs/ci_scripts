@@ -58,17 +58,6 @@ fi
 
 docker buildx use default
 
-echo "$0: loading cached builder docker image"
-
-if ! $RUN_LOCALLY; then
-
-  docker pull ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE
-  docker tag ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE $DOCKER_IMAGE
-
-fi
-
-echo "$0: image loaded"
-
 ## --------------------------------------------------------------
 ## |                    prepare the workspace                   |
 ## --------------------------------------------------------------
