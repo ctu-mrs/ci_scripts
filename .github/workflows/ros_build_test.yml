@@ -2,20 +2,13 @@ name: ros_package_build
 
 on:
   workflow_call:
-    secrets:
-      PUSH_TOKEN:
-        required: true
 
   workflow_dispatch:
 
 jobs:
 
   build_amd64:
-    uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_amd64_no_artifacts.yml@ros2
-    secrets:
-      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+    uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_amd64_no_artifacts.yml@pr_fix
 
   build_arm64:
-    uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_arm64_no_artifacts.yml@ros2
-    secrets:
-      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+    uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_arm64_no_artifacts.yml@pr_fix
