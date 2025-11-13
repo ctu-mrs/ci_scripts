@@ -2,6 +2,11 @@ name: ros_package_build_arm64
 
 on:
   workflow_call:
+    inputs:
+      RUN_TESTS:
+        required: false
+        type: boolean
+        default: false
     secrets:
       PUSH_TOKEN:
         required: true
@@ -14,6 +19,7 @@ env:
   ARTIFACTS_FOLDER: /tmp/artifacts
   VARIANT: unstable
   PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
+  RUN_TESTS: ${{ inputs.RUN_TESTS }}
 
 jobs:
 
@@ -66,7 +72,7 @@ jobs:
           token: ${{secrets.PUSH_TOKEN}}
       - id: build
         run: |
-          ./ci_scripts/package_build/ros_build/build.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.ARTIFACTS_FOLDER}} $PWD ${{github.event.repository.name}}
+          ./ci_scripts/package_build/ros_build/build.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.ARTIFACTS_FOLDER}} $PWD ${{github.event.repository.name}} ${{env.RUN_TESTS}}
 
   delete_builder:
     needs: build-job

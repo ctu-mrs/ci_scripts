@@ -2,6 +2,11 @@ name: ros_package_build
 
 on:
   workflow_call:
+    inputs:
+      RUN_TESTS:
+        required: false
+        type: boolean
+        default: false
     secrets:
       PUSH_TOKEN:
         required: true
@@ -12,10 +17,14 @@ jobs:
 
   build_amd64:
     uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_amd64_no_artifacts.yml@ros2
+    with:
+      RUN_TESTS: ${{ inputs.RUN_TESTS }}
     secrets:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
 
   build_arm64:
     uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_arm64_no_artifacts.yml@ros2
+    with:
+      RUN_TESTS: ${{ inputs.RUN_TESTS }}
     secrets:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
