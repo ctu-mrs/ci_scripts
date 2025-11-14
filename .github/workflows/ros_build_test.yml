@@ -8,7 +8,7 @@ on:
 jobs:
 
   build_amd64:
-    uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_amd64_no_artifacts.yml@pr_fix
+    uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_amd64_no_artifacts.yml@ros2
 
   build_arm64:
-    uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_arm64_no_artifacts.yml@pr_fix
+    uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_arm64_no_artifacts.yml@ros2
