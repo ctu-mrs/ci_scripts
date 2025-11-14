@@ -32,5 +32,5 @@ jobs:
           path: ci_scripts
       - id: build
         run: |
-          ./ci_scripts/docker/prime_image/prime_image.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}} ${{github.event.repository.name}}
+          ./ci_scripts/docker/prime_image_pr/prime_image.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}} ${{github.event.repository.name}}
           ./ci_scripts/ros_test/run_test.sh $PWD ${{env.BUILDER_IMAGE}} ${{github.event.repository.name}}
