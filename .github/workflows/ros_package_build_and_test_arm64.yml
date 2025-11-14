@@ -1,0 +1,36 @@
+name: ros_package_build_and_test_arm64
+
+on:
+  workflow_call:
+
+  workflow_dispatch:
+
+env:
+  BASE_IMAGE: ctumrs/ros_jazzy:latest
+  BUILDER_IMAGE: jazzy_builder_arm_${{github.RUN_ID}}
+  ARTIFACTS_FOLDER: /tmp/artifacts
+  VARIANT: unstable
+
+jobs:
+
+  build-job:
+    runs-on: ubuntu-22.04-arm
+    timeout-minutes: 360 # 6 hour timeout
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - id: init_artifacts
+        run: |
+          mkdir -p ${{env.ARTIFACTS_FOLDER}}
+      - name: Checkout CI scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: ros2
+          path: ci_scripts
+      - id: build
+        run: |
+          ./ci_scripts/docker/prime_image_pr/prime_image.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}} ${{github.event.repository.name}}
+          ./ci_scripts/ros_test/run_test.sh $PWD ${{env.BUILDER_IMAGE}} ${{github.event.repository.name}}
