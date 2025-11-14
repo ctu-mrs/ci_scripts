@@ -48,14 +48,6 @@ WORKSPACE_FOLDER=/tmp/workspace
 
 $REPO_PATH/helpers/wait_for_docker.sh
 
-if ! $RUN_LOCALLY; then
-
-  echo "$0: logging in to docker registry"
-
-  echo $PUSH_TOKEN | docker login ghcr.io -u ctumrsbot --password-stdin
-
-fi
-
 docker buildx use default
 
 ## --------------------------------------------------------------
