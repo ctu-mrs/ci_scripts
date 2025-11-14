@@ -14,7 +14,6 @@ env:
 jobs:
 
   build-job:
-    needs: init-artifacts
     runs-on: ubuntu-22.04
     timeout-minutes: 360 # 6 hour timeout
     steps:
