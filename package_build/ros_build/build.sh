@@ -53,7 +53,8 @@ if [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ; then
 fi
 
 sudo rm -rf /tmp/repository
-cp -r $REPOSITORY_FOLDER /tmp/repository
+mkdir -p /tmp/repository
+cp -r $REPOSITORY_FOLDER/. /tmp/repository/
 
 ## --------------------------------------------------------------
 ## |                        docker build                        |
