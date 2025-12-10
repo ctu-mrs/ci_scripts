@@ -11,13 +11,19 @@ WORKSPACE=/etc/docker/workspace
 
 ## | ---------------- initialize the workspace ---------------- |
 
+echo "::group::dependency installation"
+
 echo "$0: installing dependencies using rosdep"
 
 rosdep install -y -v --from-path $WORKSPACE/src || echo "$0: failed to install dependencies using rosdep, the build might fail"
 
+echo "::endgroup::"
+
 ## | -------------------- build the package ------------------- |
 #
 echo "$0: building the workspace"
+
+echo "::group::build"
 
 cd $WORKSPACE
 
@@ -29,7 +35,11 @@ source $WORKSPACE/install/setup.bash
 
 ## | --- run tests an all ros packages within the repository -- |
 
+echo "::endgroup::"
+
 echo "$0: running the tests"
+
+echo "::group::test"
 
 cd $WORKSPACE
 
@@ -41,7 +51,13 @@ pkgs=$(colcon list -n)
 
 colcon test --executor sequential --ctest-args --packages-select $pkgs
 
+echo "::endgroup::"
+
+echo "::group::results"
+
 colcon test-result --all --verbose || FAILED=1
+
+echo "::endgroup::"
 
 echo "$0: tests finished"
 
