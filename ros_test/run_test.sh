@@ -70,7 +70,7 @@ git submodule update --init --recursive
 
 [[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install || echo "no gitman modules to install"
 
-cp -r $SOURCES_PATH/* $WORKSPACE_FOLDER/src/repository
+cp -r $SOURCES_PATH/. $WORKSPACE_FOLDER/src/repository
 
 ## | ----------------- copy the testing script ---------------- |
 
