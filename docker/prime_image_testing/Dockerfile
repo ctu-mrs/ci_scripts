@@ -5,16 +5,28 @@ FROM $BASE_IMAGE
 
 ARG PPA_VARIANT
 
-RUN apt-get -y update
+# Set environment variables once (replaces the interactive workaround lines)
+ENV DEBIAN_FRONTEND=noninteractive
 
-# workaround interractive prompts during apt installations
-RUN echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install keyboard-configuration
-
-RUN apt-get -y install software-properties-common curl bash
-
-RUN curl https://ctu-mrs.github.io/ppa2-${PPA_VARIANT}/add_ppa.sh | bash
-
-RUN apt-get -y install ros-jazzy-mrs-uav-core
-
-RUN apt-get -y install fakeroot debhelper python3-pip python3-bloom python3-rosdep dpkg-dev git aptitude wget
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    software-properties-common \
+    curl \
+    bash \
+    keyboard-configuration \
+    # Install the PPA
+    && curl https://ctu-mrs.github.io/ppa2-${PPA_VARIANT}/add_ppa.sh | bash \
+    # Install ROS packages and Dev tools
+    && apt-get install -y --no-install-recommends \
+    ros-jazzy-mrs-uav-core \
+    fakeroot \
+    debhelper \
+    python3-pip \
+    python3-bloom \
+    python3-rosdep \
+    dpkg-dev \
+    git \
+    aptitude \
+    wget \
+    # CLEANUP: This is the most important step for compression
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
