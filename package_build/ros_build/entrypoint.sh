@@ -35,6 +35,14 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
   echo "$0: cding to '$REPO_FOLDER/$PKG_PATH'"
   cd $REPO_FOLDER/$PKG_PATH
 
+  ## don't run if COLCON_IGNORE is present
+
+  if [ -e ./COLCON_IGNORE ]; then
+
+    echo "$0: COLCON_IGNORE present, skipping $PACKAGE"
+    continue
+  fi
+
   FUTURE_DEB_NAME=$(echo "ros-jazzy-$PACKAGE" | sed 's/_/-/g')
 
   echo "$0: future deb name: $FUTURE_DEB_NAME"
@@ -43,10 +51,6 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
 
   SHA=$(git rev-parse --short HEAD)
   DOCKER_SHA=$(cat $OTHER_FILES_FOLDER/base_sha.txt)
-
-  ## don't run if COLCON_IGNORE is present
-
-  [ -e $PKG_PATH/COLCON_IGNORE ] && continue
 
   apt-get -y update
 
