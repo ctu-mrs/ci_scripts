@@ -27,6 +27,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     aptitude \
     wget \
+    # Install mesa-vulkan-drivers to provide Lavapipe (Vulkan software rendering)
+    mesa-vulkan-drivers \
     # CLEANUP: This is the most important step for compression
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
