@@ -16,6 +16,8 @@ OTHER_FILES_FOLDER=/etc/docker/other_files
 
 git config --global --add safe.directory /etc/docker/repository
 
+apt-get -y update
+
 ## get up-to-date lists for resolving ROS package.xml depencies
 rosdep update
 
