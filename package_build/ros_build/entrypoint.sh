@@ -16,6 +16,9 @@ OTHER_FILES_FOLDER=/etc/docker/other_files
 
 git config --global --add safe.directory /etc/docker/repository
 
+## get up-to-date lists for resolving ROS package.xml depencies
+rosdep update
+
 BUILD_ORDER=$(cat /etc/docker/other_files/build_order.txt)
 
 echo ""
@@ -53,8 +56,6 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
   DOCKER_SHA=$(cat $OTHER_FILES_FOLDER/base_sha.txt)
 
   apt-get -y update
-
-  rosdep update
 
   rosdep install -y -v --rosdistro=jazzy --dependency-types=build --dependency-types=buildtool --from-paths ./
 
