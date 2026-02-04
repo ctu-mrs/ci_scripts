@@ -28,9 +28,9 @@ REPOSITORY_NAME=$3
 
 # defaults for testing
 
-[ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=jazzy_builder
-[ -z $SOURCES_PATH ] && SOURCES_PATH=~/ws/src/mrs_lib
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=mrs_lib
+[ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=jazzy_testing
+[ -z $SOURCES_PATH ] && SOURCES_PATH=~/git/uvdar_core
+[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=uvdar_core
 
 echo "SOURCES_PATH=$SOURCES_PATH"
 echo "DOCKER_IMAGE=$DOCKER_IMAGE"

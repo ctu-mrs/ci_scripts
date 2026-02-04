@@ -15,11 +15,14 @@ echo "::group::dependency installation"
 
 echo "$0: installing dependencies using rosdep"
 
+git config --global --add safe.directory /etc/docker/workspace/src/repository
+
 apt-get -y update
 
+## get up-to-date lists for resolving ROS package.xml depencies
 rosdep update
 
-rosdep install -y -v --from-path $WORKSPACE/src || echo "$0: failed to install dependencies using rosdep, the build might fail"
+rosdep install -y -v --from-path $WORKSPACE/src --ignore-src || echo "$0: failed to install dependencies using rosdep, the build might fail"
 
 echo "::endgroup::"
 

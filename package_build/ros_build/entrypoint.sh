@@ -16,6 +16,8 @@ OTHER_FILES_FOLDER=/etc/docker/other_files
 
 git config --global --add safe.directory /etc/docker/repository
 
+apt-get -y update
+
 ## get up-to-date lists for resolving ROS package.xml depencies
 rosdep update
 
@@ -57,7 +59,7 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
 
   apt-get -y update
 
-  rosdep install -y -v --rosdistro=jazzy --dependency-types=build --dependency-types=buildtool --from-paths ./
+  rosdep install -y -v --rosdistro=jazzy --dependency-types=build --dependency-types=buildtool --from-paths ./ --ignore-src
 
   source /opt/ros/jazzy/setup.bash
 
