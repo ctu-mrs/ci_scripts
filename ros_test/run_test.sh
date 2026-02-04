@@ -28,7 +28,7 @@ REPOSITORY_NAME=$3
 
 # defaults for testing
 
-[ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=jazzy_builder
+[ -z $DOCKER_IMAGE ] && DOCKER_IMAGE=jazzy_testing
 [ -z $SOURCES_PATH ] && SOURCES_PATH=~/git/uvdar_core
 [ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=uvdar_core
 
