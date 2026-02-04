@@ -17,6 +17,8 @@ echo "$0: installing dependencies using rosdep"
 
 apt-get -y update
 
+rosdep update
+
 rosdep install -y -v --from-path $WORKSPACE/src || echo "$0: failed to install dependencies using rosdep, the build might fail"
 
 echo "::endgroup::"
