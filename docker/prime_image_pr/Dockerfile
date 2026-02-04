@@ -17,4 +17,7 @@ RUN curl https://ctu-mrs.github.io/ppa2-${PPA_VARIANT}/add_ppa.sh | bash
 
 RUN apt-get -y install python3-bloom python3-rosdep fakeroot debhelper dh-python dpkg-dev git aptitude
 
+# Install mesa-vulkan-drivers to provide Lavapipe (Vulkan software rendering)
+RUN apt-get -y install mesa-vulkan-drivers
+
 RUN apt-get -y install ros-jazzy-mrs-uav-system-full
