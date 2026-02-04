@@ -59,7 +59,7 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
 
   apt-get -y update
 
-  rosdep install -y -v --rosdistro=jazzy --dependency-types=build --dependency-types=buildtool --from-paths ./ --ignore-src -y 
+  rosdep install -y -v --rosdistro=jazzy --dependency-types=build --dependency-types=buildtool --from-paths ./ --ignore-src
 
   source /opt/ros/jazzy/setup.bash
 
