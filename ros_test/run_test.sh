@@ -66,9 +66,20 @@ mkdir -p $WORKSPACE_FOLDER/src/repository
 
 ## | -------------------- update submodules ------------------- |
 
+echo "$0: updating git submodules"
+
 git submodule update --init --recursive
 
-[[ -e .gitman.yml || -e .gitman.yaml ]] && gitman install || echo "no gitman modules to install"
+if [[ -e .gitman.yml || -e .gitman.yaml ]] && [[ ! -e .gitman_ignore ]] ; then
+
+  pipx install gitman==3.5.2 --pip-args regex==2024.9.11
+  gitman install
+
+else
+
+  echo "no gitman modules to install"
+
+fi
 
 cp -r $SOURCES_PATH/. $WORKSPACE_FOLDER/src/repository
 
