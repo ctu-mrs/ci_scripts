@@ -20,12 +20,12 @@ jobs:
   init-artifacts:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: 'recursive'
       - name: Checkout CI scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           repository: ctu-mrs/ci_scripts
           ref: master
@@ -37,7 +37,7 @@ jobs:
         run: |
           ./ci_scripts/docker/prime_image/prime_image.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}} ${{github.event.repository.name}}
       - name: Save artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: artifacts_amd64
           path: ${{env.ARTIFACTS_FOLDER}}
@@ -49,16 +49,16 @@ jobs:
     timeout-minutes: 360 # 6 hour timeout
     steps:
       - name: Load artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: artifacts_amd64
           path: ${{env.ARTIFACTS_FOLDER}}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: 'recursive'
       - name: Checkout CI scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           repository: ctu-mrs/ci_scripts
           ref: master
@@ -68,12 +68,12 @@ jobs:
         run: |
           ./ci_scripts/package_build/ros_build/build.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.ARTIFACTS_FOLDER}} $PWD ${{github.event.repository.name}}
       - name: Delete old artifacts
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         with:
           name: artifacts_amd64
           failOnError: false
       - name: Save artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: artifacts_amd64
           path: ${{env.ARTIFACTS_FOLDER}}
@@ -84,7 +84,7 @@ jobs:
     needs: build-job
     steps:
       - name: Load artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: artifacts_amd64
           path: ${{env.ARTIFACTS_FOLDER}}
@@ -92,12 +92,12 @@ jobs:
         run: |
           rm ${{env.ARTIFACTS_FOLDER}}/compiled.txt 2> /dev/null || true
           rm ${{env.ARTIFACTS_FOLDER}}/base_sha.txt 2> /dev/null || true
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: 'recursive'
       - name: Checkout CI scripts
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           repository: ctu-mrs/ci_scripts
           ref: master
