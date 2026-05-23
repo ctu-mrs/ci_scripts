@@ -22,6 +22,7 @@ if [ "$MODE" == "from-master-branch" ]; then
   mv resources/apt/* ./
   mv resources/rosdep/* ./
   mv resources/scripts/* ./
+  mv index* ./ || echo "no index page to move"
   rm -rf resources
 
 elif [ "$MODE" == "from-debs-branch" ]; then
