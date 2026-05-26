@@ -13,7 +13,7 @@ on:
 jobs:
 
   build_amd64:
-    uses: ctu-mrs/ci_scripts/.github/workflows/nix_package_build_amd64.yml@ros2
+    uses: ctu-mrs/ci_scripts/.github/workflows/nix_package_build_amd64.yml@nix
     secrets:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
       CACHIX: ${{ secrets.CACHIX }}
