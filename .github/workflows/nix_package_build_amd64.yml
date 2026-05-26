@@ -35,4 +35,4 @@ jobs:
           authToken: '${{ secrets.CACHIX }}'
           extraPullNames: ros
       - run: nix build --accept-flake-config
-      - run: nix flake check
+      - run: nix run nixpkgs#cachix -- push ctu-mrs ./result
