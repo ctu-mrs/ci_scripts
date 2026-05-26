@@ -5,6 +5,8 @@ on:
     secrets:
       PUSH_TOKEN:
         required: true
+      CACHIX:
+        required: true
 
   workflow_dispatch:
 
@@ -13,4 +15,5 @@ jobs:
   build_amd64:
     uses: ctu-mrs/ci_scripts/.github/workflows/nix_package_build_amd64.yml@ros2
     secrets:
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
       CACHIX: ${{ secrets.CACHIX }}
