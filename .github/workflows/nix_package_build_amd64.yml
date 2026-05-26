@@ -31,7 +31,7 @@ jobs:
       # Speeds up local flake evaluation by using GitHub's native runner cache
       - uses: DeterminateSystems/magic-nix-cache-action@v8
 
-      - uses: cachix/cachix-action@v31
+      - uses: cachix/cachix-action@v15
         with:
           name: mycache
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
