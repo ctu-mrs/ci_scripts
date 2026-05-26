@@ -1,0 +1,16 @@
+name: ros_package_build
+
+on:
+  workflow_call:
+    secrets:
+      PUSH_TOKEN:
+        required: true
+
+  workflow_dispatch:
+
+jobs:
+
+  build_amd64:
+    uses: ctu-mrs/ci_scripts/.github/workflows/nix_package_build_amd64.yml@ros2
+    secrets:
+      CACHIX: ${{ secrets.CACHIX }}
