@@ -19,13 +19,18 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: 'recursive'
-      - uses: cachix/install-nix-action@v31
+
+      - uses: cachix/install-nix-action@v30
         with:
           github_access_token: ${{ secrets.PUSH_TOKEN }}
+
+      # Speeds up local flake evaluation by using GitHub's native runner cache
+      - uses: DeterminateSystems/magic-nix-cache-action@v8
+
       - uses: cachix/cachix-action@v31
         with:
           name: mycache
