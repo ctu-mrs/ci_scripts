@@ -36,7 +36,7 @@ jobs:
           name: ctu-mrs
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
           extraPullNames: ctu-mrs
-      # - run: nix run nixpkgs#cachix use ros
-      # - run: nix run nixpkgs#cachix use ctu-mrs
+      - run: nix run nixpkgs#cachix use ros
+      - run: nix run nixpkgs#cachix use ctu-mrs
       - run: nix build
       - run: nix flake check
