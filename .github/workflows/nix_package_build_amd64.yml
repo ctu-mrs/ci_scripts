@@ -33,9 +33,9 @@ jobs:
 
       - uses: cachix/cachix-action@v15
         with:
-          name: mycache
+          name: ctu-mrs
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-          extraPullNames: ros ctu-mrs
+          extraPullNames: ctu-mrs
       # - run: nix run nixpkgs#cachix use ros
       # - run: nix run nixpkgs#cachix use ctu-mrs
       - run: nix build
