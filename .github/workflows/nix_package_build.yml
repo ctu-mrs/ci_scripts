@@ -1,4 +1,4 @@
-name: ros_package_build
+name: nix_package_build
 
 on:
   workflow_call:
