@@ -24,9 +24,7 @@ jobs:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - uses: cachix/install-nix-action@v30
-        with:
-          github_access_token: ${{ secrets.PUSH_TOKEN }}
+      - uses: nixbuild/nix-quick-install-action@v34
 
       # Speeds up local flake evaluation by using GitHub's native runner cache
       - uses: DeterminateSystems/magic-nix-cache-action@v8
