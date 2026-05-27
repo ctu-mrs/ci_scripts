@@ -27,9 +27,10 @@ jobs:
           fetch-depth: 0
           submodules: 'recursive'
 
-      # - uses: nixbuild/nix-quick-install-action@v34
       - uses: DeterminateSystems/nix-installer-action@main
-      # Speeds up local flake evaluation by using GitHub's native runner cache
+        with:
+          determinate: false
+
       - uses: DeterminateSystems/magic-nix-cache-action@main
         with:
           use-flakehub: false
@@ -39,5 +40,6 @@ jobs:
           name: ctu-mrs
           authToken: '${{ secrets.CACHIX }}'
           extraPullNames: ros
+
       - run: nix build --accept-flake-config
       - run: nix run nixpkgs#cachix -- push ctu-mrs ./result
