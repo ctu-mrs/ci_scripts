@@ -18,16 +18,21 @@ jobs:
 
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      id-token: "write"
+      contents: "read"
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - uses: nixbuild/nix-quick-install-action@v34
-
+      # - uses: nixbuild/nix-quick-install-action@v34
+      - uses: DeterminateSystems/nix-installer-action@main
       # Speeds up local flake evaluation by using GitHub's native runner cache
-      - uses: DeterminateSystems/magic-nix-cache-action@v8
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+        with:
+          use-flakehub: false
 
       - uses: cachix/cachix-action@v15
         with:
