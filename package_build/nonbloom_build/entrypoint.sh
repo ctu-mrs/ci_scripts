@@ -18,16 +18,16 @@ git config --global --add safe.directory "$REPO_FOLDER"
 
 # add the repo url and commit id to the debian control file of each generated deb
 REPO_URL=$(git -C "$REPO_FOLDER" config --get remote.origin.url | sed -E 's#^ssh://git@([^/:]+)(:[0-9]+)?/#https://\1/#; s#^git@([^:]+):#https://\1/#; s#\.git$##')
-COMMIT_ID=$(git -C "$REPO_FOLDER" rev-parse HEAD)
+HOMEPAGE_URL="$REPO_URL/tree/$(git -C "$REPO_FOLDER" rev-parse HEAD)"
 
 for DEB in "${ARTIFACTS_FOLDER}"/*.deb; do
   [ -e "$DEB" ] || continue
   TMPDIR=$(mktemp -d)
   dpkg-deb -R "$DEB" "$TMPDIR"
   if grep -q '^Homepage:' "$TMPDIR/DEBIAN/control"; then
-    sed -i "s#^Homepage:.*#Homepage: ${REPO_URL}/tree/${COMMIT_ID}#" "$TMPDIR/DEBIAN/control"
+    sed -i "s#^Homepage:.*#Homepage: ${HOMEPAGE_URL}#" "$TMPDIR/DEBIAN/control"
   else
-    printf 'Homepage: %s\n' "${REPO_URL}/tree/${COMMIT_ID}" >> "$TMPDIR/DEBIAN/control"
+    printf 'Homepage: %s\n' "${HOMEPAGE_URL}" >> "$TMPDIR/DEBIAN/control"
   fi
   dpkg-deb -b "$TMPDIR" "$DEB"
   rm -rf "$TMPDIR"

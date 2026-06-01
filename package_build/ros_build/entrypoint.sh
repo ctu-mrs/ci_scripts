@@ -17,7 +17,7 @@ OTHER_FILES_FOLDER=/etc/docker/other_files
 git config --global --add safe.directory /etc/docker/repository
 
 REPO_URL=$(git -C "$REPO_FOLDER" config --get remote.origin.url | sed -E 's#^ssh://git@([^/:]+)(:[0-9]+)?/#https://\1/#; s#^git@([^:]+):#https://\1/#; s#\.git$##')
-COMMIT_ID=$(git -C "$REPO_FOLDER" rev-parse HEAD)
+HOMEPAGE_URL="$REPO_URL/tree/$(git -C "$REPO_FOLDER" rev-parse HEAD)"
 
 apt-get -y update
 
@@ -96,9 +96,9 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
     TMPDIR=$(mktemp -d)
     dpkg-deb -R "$DEB" "$TMPDIR"
     if grep -q '^Homepage:' "$TMPDIR/DEBIAN/control"; then
-      sed -i "s#^Homepage:.*#Homepage: ${REPO_URL}/tree/${COMMIT_ID}#" "$TMPDIR/DEBIAN/control"
+      sed -i "s#^Homepage:.*#Homepage: ${HOMEPAGE_URL}#" "$TMPDIR/DEBIAN/control"
     else
-      printf 'Homepage: %s\n' "${REPO_URL}/tree/${COMMIT_ID}" >> "$TMPDIR/DEBIAN/control"
+      printf 'Homepage: %s\n' "${HOMEPAGE_URL}" >> "$TMPDIR/DEBIAN/control"
     fi
     dpkg-deb -b "$TMPDIR" "$DEB"
     rm -rf "$TMPDIR"
