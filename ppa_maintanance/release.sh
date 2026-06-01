@@ -30,6 +30,7 @@ elif [ "$MODE" == "from-debs-branch" ]; then
   mv .master/resources/apt/* ./
   mv .master/resources/rosdep/* ./
   mv .master/resources/scripts/* ./
+  mv .master/resources/index* ./ || echo "no index page to move"
 
 else
 
