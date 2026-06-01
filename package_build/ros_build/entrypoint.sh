@@ -94,7 +94,9 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
   for DEB in "${DEBS[@]}"; do
     [ -e "$DEB" ] || continue
     TMPDIR=$(mktemp -d)
+    echo "$0: modifying homepage in $DEB ($TMPDIR) to $HOMEPAGE_URL"
     dpkg-deb -R "$DEB" "$TMPDIR"
+    rm -f $DEB
     if grep -q '^Homepage:' "$TMPDIR/DEBIAN/control"; then
       sed -i "s#^Homepage:.*#Homepage: ${HOMEPAGE_URL}#" "$TMPDIR/DEBIAN/control"
     else

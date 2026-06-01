@@ -23,7 +23,9 @@ HOMEPAGE_URL="$REPO_URL/tree/$(git -C "$REPO_FOLDER" rev-parse HEAD)"
 for DEB in "${ARTIFACTS_FOLDER}"/*.deb; do
   [ -e "$DEB" ] || continue
   TMPDIR=$(mktemp -d)
+  echo "$0: modifying homepage in $DEB ($TMPDIR) to $HOMEPAGE_URL"
   dpkg-deb -R "$DEB" "$TMPDIR"
+  rm -f $DEB
   if grep -q '^Homepage:' "$TMPDIR/DEBIAN/control"; then
     sed -i "s#^Homepage:.*#Homepage: ${HOMEPAGE_URL}#" "$TMPDIR/DEBIAN/control"
   else
