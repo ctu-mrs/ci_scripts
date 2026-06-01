@@ -16,6 +16,9 @@ OTHER_FILES_FOLDER=/etc/docker/other_files
 
 git config --global --add safe.directory /etc/docker/repository
 
+REPO_URL=$(git -C "$REPO_FOLDER" config --get remote.origin.url | sed -E 's#^ssh://git@([^/:]+)(:[0-9]+)?/#https://\1/#; s#^git@([^:]+):#https://\1/#; s#\.git$##')
+COMMIT_ID=$(git -C "$REPO_FOLDER" rev-parse HEAD)
+
 apt-get -y update
 
 ## get up-to-date lists for resolving ROS package.xml depencies
@@ -87,6 +90,19 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
   DEB_NAME=$(dpkg --field ../*.deb | grep "Package:" | head -n 1 | awk '{print $2}')
 
   DEBS=(../*.deb)
+
+  for DEB in "${DEBS[@]}"; do
+    [ -e "$DEB" ] || continue
+    TMPDIR=$(mktemp -d)
+    dpkg-deb -R "$DEB" "$TMPDIR"
+    if grep -q '^Homepage:' "$TMPDIR/DEBIAN/control"; then
+      sed -i "s#^Homepage:.*#Homepage: ${REPO_URL}/tree/${COMMIT_ID}#" "$TMPDIR/DEBIAN/control"
+    else
+      printf 'Homepage: %s\n' "${REPO_URL}/tree/${COMMIT_ID}" >> "$TMPDIR/DEBIAN/control"
+    fi
+    dpkg-deb -b "$TMPDIR" "$DEB"
+    rm -rf "$TMPDIR"
+  done
 
   echo "$0: installing newly compiled deb file"
   [ -e "${DEBS[0]}" ] && apt-get -y install --allow-downgrades ../*.deb || echo "$0: no artifacts to be installed"

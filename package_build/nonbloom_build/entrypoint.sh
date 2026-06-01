@@ -7,10 +7,28 @@ trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
 ARTIFACTS_FOLDER=$1
 BASE_IMAGE=$2
+REPO_FOLDER=/etc/docker/repository
 
-cd /etc/docker/repository
+cd "$REPO_FOLDER"
 
-git config --global --add safe.directory /etc/docker/repository
+git config --global --add safe.directory "$REPO_FOLDER"
 
 # call the build script within the clone repository
 ./.ci/build_package.sh ${ARTIFACTS_FOLDER} ${BASE_IMAGE}
+
+# add the repo url and commit id to the debian control file of each generated deb
+REPO_URL=$(git -C "$REPO_FOLDER" config --get remote.origin.url | sed -E 's#^ssh://git@([^/:]+)(:[0-9]+)?/#https://\1/#; s#^git@([^:]+):#https://\1/#; s#\.git$##')
+COMMIT_ID=$(git -C "$REPO_FOLDER" rev-parse HEAD)
+
+for DEB in "${ARTIFACTS_FOLDER}"/*.deb; do
+  [ -e "$DEB" ] || continue
+  TMPDIR=$(mktemp -d)
+  dpkg-deb -R "$DEB" "$TMPDIR"
+  if grep -q '^Homepage:' "$TMPDIR/DEBIAN/control"; then
+    sed -i "s#^Homepage:.*#Homepage: ${REPO_URL}/tree/${COMMIT_ID}#" "$TMPDIR/DEBIAN/control"
+  else
+    printf 'Homepage: %s\n' "${REPO_URL}/tree/${COMMIT_ID}" >> "$TMPDIR/DEBIAN/control"
+  fi
+  dpkg-deb -b "$TMPDIR" "$DEB"
+  rm -rf "$TMPDIR"
+done
