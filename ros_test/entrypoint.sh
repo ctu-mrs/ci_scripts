@@ -22,7 +22,7 @@ apt-get -y update
 ## get up-to-date lists for resolving ROS package.xml depencies
 rosdep update
 
-rosdep install -y -v --from-path $WORKSPACE/src --ignore-src || echo "$0: failed to install dependencies using rosdep, the build might fail"
+rosdep install -y -v --rosdistro=jazzy --dependency-types=build --dependency-types=build_export --dependency-types=buildtool --from-path $WORKSPACE/src --ignore-src || echo "$0: failed to install dependencies using rosdep, the build might fail"
 
 echo "::endgroup::"
 
