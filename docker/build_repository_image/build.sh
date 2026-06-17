@@ -17,6 +17,7 @@ BASE_IMAGE=$1
 REPOSITORY_NAME=$2
 PPA_VARIANT=$3
 PATH_TO_DOCKER_FOLDER=$4
+PLATFORM=$5
 
 [ -z $RUN_LOCALLY ] && RUN_LOCALLY=false
 
@@ -25,6 +26,7 @@ PATH_TO_DOCKER_FOLDER=$4
 [ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=realsense
 [ -z $PPA_VARIANT ] && PPA_VARIANT=unstable
 [ -z $PATH_TO_DOCKER_FOLDER ] && PATH_TO_DOCKER_FOLDER=~/git/realsense/docker
+[ -z $PLATFORM ] && PLATFORM=linux/amd64,linux/arm64
 
 ## | ---------------------- derived args ---------------------- |
 
@@ -49,4 +51,4 @@ echo "$0: building the image"
 
 cd $PATH_TO_DOCKER_FOLDER
 
-docker buildx build . --file Dockerfile --build-arg BASE_IMAGE=${BASE_IMAGE} --build-arg PPA_VARIANT=${PPA_VARIANT} --tag ${OUTPUT_IMAGE} --progress plain --platform=linux/amd64,linux/arm64 --push
+docker buildx build . --file Dockerfile --build-arg BASE_IMAGE=${BASE_IMAGE} --build-arg PPA_VARIANT=${PPA_VARIANT} --tag ${OUTPUT_IMAGE} --progress plain --platform=${PLATFORM} --push

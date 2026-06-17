@@ -2,6 +2,12 @@ name: build_repository_docker
 
 on:
   workflow_call:
+    inputs:
+      platform:
+        description: 'Target platform(s) for docker buildx (e.g. linux/amd64 or linux/amd64,linux/arm64)'
+        required: false
+        type: string
+        default: 'linux/amd64,linux/arm64'
     secrets:
       DOCKERHUB:
         required: true
@@ -9,6 +15,11 @@ on:
         required: true
 
   workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Target platform(s) for docker buildx'
+        required: false
+        default: 'linux/amd64,linux/arm64'
 
 env:
   BASE_IMAGE: ctumrs/ros_jazzy:latest
@@ -46,4 +57,5 @@ jobs:
           token: ${{secrets.PUSH_TOKEN}}
       - id: build
         run: |
-          ./ci_scripts/docker/build_repository_image/build.sh ${{env.BASE_IMAGE}} ${{github.event.repository.name}} ${{env.VARIANT}} ./docker
+          PLATFORM="${{ inputs.platform || 'linux/amd64,linux/arm64' }}"
+          ./ci_scripts/docker/build_repository_image/build.sh ${{env.BASE_IMAGE}} ${{github.event.repository.name}} ${{env.VARIANT}} ./docker "${PLATFORM}"
