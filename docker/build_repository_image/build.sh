@@ -32,9 +32,6 @@ PLATFORM=$5
 
 OUTPUT_IMAGE=ctumrs/${REPOSITORY_NAME}:unstable
 
-# determine our architecture
-ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
-
 $REPO_PATH/helpers/wait_for_docker.sh
 
 docker buildx create --name container --driver=docker-container --use
