@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # Install ROS packages and Dev tools
     && apt-get install -y --no-install-recommends \
     ros-jazzy-mrs-uav-core \
+    ros-jazzy-rclcpp \
+    ros-jazzy-rclcpp-components \
     fakeroot \
     debhelper \
     python3-pip \
