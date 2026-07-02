@@ -26,8 +26,6 @@ source $WORKSPACE/devel/setup.bash
 
 ## | --- run tests an all ros packages within the repository -- |
 
-colcon test --base-paths $WORKSPACE/src/$REPOSITORY_NAME
-
 catkin test --limit-status-rate 0.2 -p 1 -s
 
 echo "$0: tests finished"
