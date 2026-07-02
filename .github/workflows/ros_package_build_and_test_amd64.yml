@@ -1,0 +1,36 @@
+name: ros_package_build_and_test_amd64
+
+on:
+  workflow_call:
+
+  workflow_dispatch:
+
+env:
+  BASE_IMAGE: ctumrs/ros_noetic:latest
+  BUILDER_IMAGE: noetic_builder_amd_${{github.RUN_ID}}
+  ARTIFACTS_FOLDER: /tmp/artifacts
+  VARIANT: unstable
+
+jobs:
+
+  build-job:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360 # 6 hour timeout
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Checkout CI scripts
+        uses: actions/checkout@v6
+        with:
+          repository: ctu-mrs/ci_scripts
+          ref: master
+          path: ci_scripts
+      - id: init_artifacts
+        run: |
+          mkdir -p ${{env.ARTIFACTS_FOLDER}}
+      - id: build
+        run: |
+          ./ci_scripts/docker/prime_image_pr/prime_image.sh ${{env.BASE_IMAGE}} ${{env.BUILDER_IMAGE}} ${{env.VARIANT}} ${{env.ARTIFACTS_FOLDER}} ${{github.event.repository.name}}
+          ./ci_scripts/ros_test/run_test.sh $PWD ${{env.BUILDER_IMAGE}} ${{github.event.repository.name}}
