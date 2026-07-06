@@ -20,12 +20,12 @@ jobs:
   init-artifacts:
     runs-on: ubuntu-22.04-arm
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: 'recursive'
       - name: Checkout CI scripts
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ctu-mrs/ci_scripts
           ref: master
@@ -53,12 +53,12 @@ jobs:
         with:
           name: artifacts_arm64
           path: ${{env.ARTIFACTS_FOLDER}}
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: 'recursive'
       - name: Checkout CI scripts
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ctu-mrs/ci_scripts
           ref: master
@@ -92,12 +92,12 @@ jobs:
         run: |
           rm ${{env.ARTIFACTS_FOLDER}}/compiled.txt 2> /dev/null || true
           rm ${{env.ARTIFACTS_FOLDER}}/base_sha.txt 2> /dev/null || true
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: 'recursive'
       - name: Checkout CI scripts
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ctu-mrs/ci_scripts
           ref: master
