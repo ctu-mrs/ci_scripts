@@ -2,6 +2,11 @@ name: ros_package_build_with_docker_amd64
 
 on:
   workflow_call:
+    inputs:
+      base_image:
+        description: 'Base Docker image to build FROM'
+        required: false
+        type: string
     secrets:
       PUSH_TOKEN:
         required: true
@@ -22,6 +27,7 @@ jobs:
     uses: ctu-mrs/ci_scripts/.github/workflows/build_repository_docker.yml@ros2
     with:
       platform: linux/amd64
+      base_image: ${{ inputs.base_image }}
     secrets:
       DOCKERHUB: ${{ secrets.DOCKERHUB }}
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}

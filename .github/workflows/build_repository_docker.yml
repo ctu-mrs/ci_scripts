@@ -8,6 +8,10 @@ on:
         required: false
         type: string
         default: 'linux/amd64,linux/arm64'
+      base_image:
+        description: 'Base Docker image to build FROM'
+        required: false
+        type: string
     secrets:
       DOCKERHUB:
         required: true
@@ -20,9 +24,12 @@ on:
         description: 'Target platform(s) for docker buildx'
         required: false
         default: 'linux/amd64,linux/arm64'
+      base_image:
+        description: 'Base Docker image to build FROM'
+        required: false
 
 env:
-  BASE_IMAGE: ctumrs/ros_jazzy:latest
+  BASE_IMAGE: ${{ inputs.base_image || 'ctumrs/ros_jazzy:latest' }}
   VARIANT: unstable
   DOCKERHUB: ${{secrets.DOCKERHUB}}
   PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
