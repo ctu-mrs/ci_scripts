@@ -11,5 +11,5 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && curl https://ctu-mrs.github.io/ppa-${PPA_VARIANT}/add_ppa.sh | bash && \
     apt-get --no-install-recommends -y install ros-${ROS_DISTRO}-mrs-uav-system-full \
     keyboard-configuration software-properties-common python3-pip fakeroot ros-noetic-catkin \
-    python3-catkin-tools python-is-python3 debhelper git lcov aptitude && pip3 install -U bloom \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    python3-catkin-tools python-is-python3 debhelper git lcov aptitude && \
+    pip3 install -U bloom && apt-get clean && rm -rf /var/lib/apt/lists/*
