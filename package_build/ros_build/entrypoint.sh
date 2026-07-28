@@ -19,10 +19,10 @@ git config --global --add safe.directory /etc/docker/repository
 REPO_URL=$(git -C "$REPO_FOLDER" config --get remote.origin.url | sed -E 's#^ssh://git@([^/:]+)(:[0-9]+)?/#https://\1/#; s#^git@([^:]+):#https://\1/#; s#\.git$##')
 HOMEPAGE_URL="$REPO_URL/tree/$(git -C "$REPO_FOLDER" rev-parse HEAD)"
 
-apt-get -y update
+apt-get -o Acquire::Retries=4 update
 
 ## get up-to-date lists for resolving ROS package.xml depencies
-rosdep update
+rosdep --rosdistro=$ROS_DISTRO update
 
 BUILD_ORDER=$(cat /etc/docker/other_files/build_order.txt)
 
@@ -51,7 +51,7 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
     continue
   fi
 
-  FUTURE_DEB_NAME=$(echo "ros-jazzy-$PACKAGE" | sed 's/_/-/g')
+  FUTURE_DEB_NAME=$(echo "ros-$ROS_DISTRO-$PACKAGE" | sed 's/_/-/g')
 
   echo "$0: future deb name: $FUTURE_DEB_NAME"
 
@@ -60,11 +60,11 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
   SHA=$(git rev-parse --short HEAD)
   DOCKER_SHA=$(cat $OTHER_FILES_FOLDER/base_sha.txt)
 
-  apt-get -y update
+  apt-get -o Acquire::Retries=4 update
 
-  rosdep install -y -v --rosdistro=jazzy --dependency-types=build --dependency-types=build_export --dependency-types=buildtool --from-paths ./ --ignore-src
+  rosdep install -y -v --rosdistro=$ROS_DISTRO --dependency-types=build --dependency-types=build_export --dependency-types=buildtool --from-paths ./ --ignore-src
 
-  source /opt/ros/jazzy/setup.bash
+  source /opt/ros/$ROS_DISTRO/setup.bash
 
   echo "$0: Running bloom on a package in '$PKG_PATH'"
 
@@ -74,7 +74,7 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
     export DEB_BUILD_OPTIONS="$DEB_BUILD_OPTIONS parallel=`nproc`"
   fi
 
-  bloom-generate rosdebian --os-name ubuntu --os-version noble --ros-distro jazzy
+  bloom-generate rosdebian --os-name ubuntu --os-version $(lsb_release -cs) --ros-distro $ROS_DISTRO
 
   epoch=2
 
@@ -119,9 +119,9 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
   ubuntu: [$DEB_NAME]
 " >> $ROSDEP_FILE
 
-  rosdep update
+  rosdep --rosdistro=$ROS_DISTRO update
 
-  source /opt/ros/jazzy/setup.bash
+  source /opt/ros/$ROS_DISTRO/setup.bash
 
   echo "$PACKAGE" >> $OTHER_FILES_FOLDER/compiled.txt
 

@@ -5,14 +5,10 @@ FROM $BASE_IMAGE
 
 ARG PPA_VARIANT
 
-RUN apt-get -y update
+# Set environment variables once (replaces the interactive workaround lines)
+ENV DEBIAN_FRONTEND=noninteractive
 
-# workaround interractive prompts during apt installations
-RUN echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install keyboard-configuration
-
-RUN apt-get -y install software-properties-common curl bash
-
-RUN curl https://ctu-mrs.github.io/ppa2-${PPA_VARIANT}/add_ppa.sh | bash
-
-RUN apt-get -y install python3-bloom python3-rosdep fakeroot debhelper dh-python dpkg-dev git aptitude
+RUN apt-get update && curl https://ctu-mrs.github.io/ppa2-${PPA_VARIANT}/add_ppa.sh | bash && \
+    apt-get --no-install-recommends -y install keyboard-configuration software-properties-common \
+    python3-bloom fakeroot debhelper dh-python git aptitude mesa-vulkan-drivers && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*

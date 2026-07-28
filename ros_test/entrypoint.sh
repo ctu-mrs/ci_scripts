@@ -17,12 +17,12 @@ echo "$0: installing dependencies using rosdep"
 
 git config --global --add safe.directory /etc/docker/workspace/src/repository
 
-apt-get -y update
+apt-get -o Acquire::Retries=4 update
 
 ## get up-to-date lists for resolving ROS package.xml depencies
-rosdep update
+rosdep --rosdistro=$ROS_DISTRO update
 
-rosdep install -y -v --rosdistro=jazzy --from-path $WORKSPACE/src --ignore-src || echo "$0: failed to install dependencies using rosdep, the build might fail"
+rosdep install -y -v --rosdistro=$ROS_DISTRO --from-path $WORKSPACE/src --ignore-src || echo "$0: failed to install dependencies using rosdep, the build might fail"
 
 echo "::endgroup::"
 
@@ -34,7 +34,7 @@ echo "::group::build"
 
 cd $WORKSPACE
 
-source /opt/ros/jazzy/setup.bash
+source /opt/ros/$ROS_DISTRO/setup.bash
 
 colcon build --symlink-install --cmake-args -DENABLE_TESTS=true
 
