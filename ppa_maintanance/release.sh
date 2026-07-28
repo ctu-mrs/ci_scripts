@@ -10,9 +10,8 @@ MODE=$2
 
 echo "$RELEASE_KEY" | gpg --import
 
-sudo apt -y update
-sudo apt -y install dpkg-dev # needed for dpng-scanpackages
-sudo apt -y install apt-utils # needed for apt-ftparchive
+sudo apt-get -o Acquire::Retries=4 update
+sudo apt -y install dpkg-dev apt-utils # needed for dpng-scanpackages and apt-ftparchive
 
 if [ "$MODE" == "from-master-branch" ]; then
 

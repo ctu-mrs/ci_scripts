@@ -2,7 +2,6 @@
 
 import os
 import xml.etree.ElementTree as ET
-from collections import defaultdict, deque
 import re
 import graphlib
 

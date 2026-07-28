@@ -51,9 +51,9 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
   ## don't run if CATKIN_IGNORE is present
   [ -e $PKG_PATH/CATKIN_IGNORE ] && continue
 
-  apt-get -y update
+  apt-get -o Acquire::Retries=4 update
 
-  rosdep update --include-eol-distros
+  rosdep update --include-eol-distros --rosdistro=noetic
 
   rosdep install -y -v --rosdistro=noetic --dependency-types=build --from-paths ./
 
@@ -94,7 +94,7 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
   ubuntu: [$DEB_NAME]
 " >> $ROSDEP_FILE
 
-  rosdep update --include-eol-distros
+  rosdep update --include-eol-distros --rosdistro=noetic
 
   source /opt/ros/noetic/setup.bash
 

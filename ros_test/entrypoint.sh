@@ -13,9 +13,9 @@ WORKSPACE=/etc/docker/workspace
 
 echo "$0: installing dependencies using rosdep"
 
-rosdep update --include-eol-distros
+rosdep update --include-eol-distros --rosdistro=noetic
 
-rosdep install -y -v --from-path $WORKSPACE/src
+rosdep install -y -v --rosdistro=noetic --from-path $WORKSPACE/src
 
 cd $WORKSPACE
 
