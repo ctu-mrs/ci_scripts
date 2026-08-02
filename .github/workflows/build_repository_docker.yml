@@ -12,6 +12,10 @@ on:
         description: 'Base Docker image to build FROM'
         required: false
         type: string
+      output_image:
+        description: 'Docker image to output'
+        required: false
+        type: string
     secrets:
       DOCKERHUB:
         required: true
@@ -27,10 +31,14 @@ on:
       base_image:
         description: 'Base Docker image to build FROM'
         required: false
+      output_image:
+        description: 'Docker image to output'
+        required: false
 
 env:
   BASE_IMAGE: ${{ inputs.base_image || 'ctumrs/ros_jazzy:latest' }}
   VARIANT: unstable
+  OUTPUT_IMAGE: ${{ inputs.output_image || format('ctumrs/{0}:unstable', github.event.repository.name) }}
   DOCKERHUB: ${{secrets.DOCKERHUB}}
   PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
 
@@ -65,4 +73,4 @@ jobs:
       - id: build
         run: |
           PLATFORM="${{ inputs.platform || 'linux/amd64,linux/arm64' }}"
-          ./ci_scripts/docker/build_repository_image/build.sh ${{env.BASE_IMAGE}} ${{github.event.repository.name}} ${{env.VARIANT}} ./docker "${PLATFORM}"
+          ./ci_scripts/docker/build_repository_image/build.sh ${{env.BASE_IMAGE}} ${{env.VARIANT}} ${{env.OUTPUT_IMAGE}} ./docker "${PLATFORM}"

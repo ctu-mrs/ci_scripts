@@ -7,6 +7,10 @@ on:
         description: 'Base Docker image to build FROM'
         required: false
         type: string
+      output_image:
+        description: 'Docker image to output'
+        required: false
+        type: string
     secrets:
       PUSH_TOKEN:
         required: true
@@ -28,6 +32,7 @@ jobs:
     with:
       platform: linux/amd64
       base_image: ${{ inputs.base_image }}
+      output_image: ${{ inputs.output_image }}
     secrets:
       DOCKERHUB: ${{ secrets.DOCKERHUB }}
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}

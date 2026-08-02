@@ -14,8 +14,8 @@ REPO_PATH=$MY_PATH/../..
 ## | -------------------------- args -------------------------- |
 
 BASE_IMAGE=$1
-REPOSITORY_NAME=$2
-PPA_VARIANT=$3
+PPA_VARIANT=$2
+OUTPUT_IMAGE=$3
 PATH_TO_DOCKER_FOLDER=$4
 PLATFORM=$5
 
@@ -23,14 +23,12 @@ PLATFORM=$5
 
 # default for testing
 [ -z $BASE_IMAGE ] && BASE_IMAGE=ctumrs/ros_jazzy:latest
-[ -z $REPOSITORY_NAME ] && REPOSITORY_NAME=realsense
 [ -z $PPA_VARIANT ] && PPA_VARIANT=unstable
+[ -z $OUTPUT_IMAGE ] && OUTPUT_IMAGE=ctumrs/realsense:$PPA_VARIANT
 [ -z $PATH_TO_DOCKER_FOLDER ] && PATH_TO_DOCKER_FOLDER=~/git/realsense/docker
 [ -z $PLATFORM ] && PLATFORM=linux/amd64,linux/arm64
 
 ## | ---------------------- derived args ---------------------- |
-
-OUTPUT_IMAGE=ctumrs/${REPOSITORY_NAME}:unstable
 
 $REPO_PATH/helpers/wait_for_docker.sh
 
