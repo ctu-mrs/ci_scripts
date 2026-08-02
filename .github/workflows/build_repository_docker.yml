@@ -3,11 +3,6 @@ name: build_repository_docker
 on:
   workflow_call:
     inputs:
-      platform:
-        description: 'Target platform(s) for docker buildx (e.g. linux/amd64 or linux/amd64,linux/arm64)'
-        required: false
-        type: string
-        default: 'linux/amd64,linux/arm64'
       base_image:
         description: 'Base Docker image to build FROM'
         required: false
@@ -16,6 +11,11 @@ on:
         description: 'Docker image to output'
         required: false
         type: string
+      platform:
+        description: 'Target platform(s) for docker buildx (e.g. linux/amd64 or linux/amd64,linux/arm64)'
+        required: false
+        type: string
+        default: 'linux/amd64,linux/arm64'
     secrets:
       DOCKERHUB:
         required: true
@@ -48,8 +48,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - id: run
-        run: |
-          sleep 300
+        run: sleep 300
 
   build-docker:
     needs: wait-for-ppa
