@@ -24,16 +24,16 @@ on:
 
   workflow_dispatch:
     inputs:
-      platform:
-        description: 'Target platform(s) for docker buildx'
-        required: false
-        default: 'linux/amd64,linux/arm64'
       base_image:
         description: 'Base Docker image to build FROM'
         required: false
       output_image:
         description: 'Docker image to output'
         required: false
+      platform:
+        description: 'Target platform(s) for docker buildx'
+        required: false
+        default: 'linux/amd64,linux/arm64'
 
 env:
   BASE_IMAGE: ${{ inputs.base_image || 'ctumrs/ros_jazzy:latest' }}
@@ -71,6 +71,4 @@ jobs:
           path: ci_scripts
           token: ${{secrets.PUSH_TOKEN}}
       - id: build
-        run: |
-          PLATFORM="${{ inputs.platform || 'linux/amd64,linux/arm64' }}"
-          ./ci_scripts/docker/build_repository_image/build.sh ${{env.BASE_IMAGE}} ${{env.VARIANT}} ${{env.OUTPUT_IMAGE}} ./docker "${PLATFORM}"
+        run: ./ci_scripts/docker/build_repository_image/build.sh ${{env.BASE_IMAGE}} ${{env.VARIANT}} ${{env.OUTPUT_IMAGE}} ./docker ${{ inputs.platform }}
