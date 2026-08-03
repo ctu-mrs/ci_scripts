@@ -5,9 +5,6 @@ FROM $BASE_IMAGE
 
 ARG PPA_VARIANT
 
-# Set environment variables once (replaces the interactive workaround lines)
-ENV DEBIAN_FRONTEND=noninteractive
-
 RUN apt-get update && curl https://ctu-mrs.github.io/ppa-${PPA_VARIANT}/add_ppa.sh | bash && \
     apt-get --no-install-recommends -y install ros-${ROS_DISTRO}-mrs-uav-core \
     keyboard-configuration software-properties-common python3-pip fakeroot ros-noetic-catkin \
