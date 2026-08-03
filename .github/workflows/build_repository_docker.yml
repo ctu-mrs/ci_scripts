@@ -16,6 +16,11 @@ on:
         required: false
         type: string
         default: 'linux/amd64,linux/arm64'
+      wait_for_ppa:
+        description: 'Wait for PPA before building'
+        required: false
+        type: boolean
+        default: true
     secrets:
       DOCKERHUB:
         required: true
@@ -34,6 +39,10 @@ on:
         description: 'Target platform(s) for docker buildx'
         required: false
         default: 'linux/amd64,linux/arm64'
+      wait_for_ppa:
+        description: 'Wait for PPA before building'
+        required: false
+        default: true
 
 env:
   BASE_IMAGE: ${{ inputs.base_image || 'ctumrs/ros_jazzy:latest' }}
@@ -43,21 +52,17 @@ env:
   PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
 
 jobs:
-
-  wait-for-ppa:
-    runs-on: ubuntu-22.04
-    steps:
-      - id: run
-        run: sleep 300
-
   build-docker:
-    needs: wait-for-ppa
     runs-on: ubuntu-22.04
     timeout-minutes: 360 # 6 hour timeout
     env:
       DOCKERHUB: ${{secrets.DOCKERHUB}}
       PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
     steps:
+      - name: Wait for PPA
+        if: ${{ inputs.wait_for_ppa }}
+        run: sleep 300
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
