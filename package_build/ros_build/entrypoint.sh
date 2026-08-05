@@ -51,7 +51,7 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
   ## don't run if CATKIN_IGNORE is present
   [ -e $PKG_PATH/CATKIN_IGNORE ] && continue
 
-  apt-get -o Acquire::Retries=4 update
+  apt-get update
 
   rosdep update --include-eol-distros --rosdistro=noetic
 
