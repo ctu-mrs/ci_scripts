@@ -17,7 +17,7 @@ echo "$0: installing dependencies using rosdep"
 
 git config --global --add safe.directory /etc/docker/workspace/src/repository
 
-apt-get -o Acquire::Retries=4 update
+apt-get update
 
 ## get up-to-date lists for resolving ROS package.xml depencies
 rosdep --rosdistro=$ROS_DISTRO update

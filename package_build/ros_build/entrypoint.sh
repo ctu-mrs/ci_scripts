@@ -19,7 +19,7 @@ git config --global --add safe.directory /etc/docker/repository
 REPO_URL=$(git -C "$REPO_FOLDER" config --get remote.origin.url | sed -E 's#^ssh://git@([^/:]+)(:[0-9]+)?/#https://\1/#; s#^git@([^:]+):#https://\1/#; s#\.git$##')
 HOMEPAGE_URL="$REPO_URL/tree/$(git -C "$REPO_FOLDER" rev-parse HEAD)"
 
-apt-get -o Acquire::Retries=4 update
+apt-get update
 
 ## get up-to-date lists for resolving ROS package.xml depencies
 rosdep --rosdistro=$ROS_DISTRO update
@@ -59,8 +59,6 @@ OLDIFS=$IFS; IFS=$'\n'; for LINE in $BUILD_ORDER; do
 
   SHA=$(git rev-parse --short HEAD)
   DOCKER_SHA=$(cat $OTHER_FILES_FOLDER/base_sha.txt)
-
-  apt-get -o Acquire::Retries=4 update
 
   rosdep install -y -v --rosdistro=$ROS_DISTRO --dependency-types=build --dependency-types=build_export --dependency-types=buildtool --from-paths ./ --ignore-src
 
