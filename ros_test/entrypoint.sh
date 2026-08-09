@@ -56,6 +56,8 @@ colcon test-result --delete-yes
 
 pkgs=$(colcon list -n)
 
+export RMW_IMPLEMENTATION=rmw_zenoh_cpp
+
 colcon test --executor sequential --ctest-args --packages-select $pkgs
 
 echo "::endgroup::"
