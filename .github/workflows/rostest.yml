@@ -5,6 +5,8 @@ on:
     secrets:
       PUSH_TOKEN:
         required: true
+      PRIVATE_PPA_TOKEN:
+        required: false
 
   workflow_dispatch:
 
@@ -40,6 +42,8 @@ jobs:
     needs: prime-image
     runs-on: ubuntu-22.04
     timeout-minutes: 360 # 6 hour timeout
+    env:
+      PRIVATE_PPA_TOKEN: ${{ secrets.PRIVATE_PPA_TOKEN }}
     steps:
       - uses: actions/checkout@v6
         with:

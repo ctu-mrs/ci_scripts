@@ -2,6 +2,9 @@ name: ros_package_build_and_test
 
 on:
   workflow_call:
+    secrets:
+      PRIVATE_PPA_TOKEN:
+        required: false
 
   workflow_dispatch:
 
@@ -9,6 +12,10 @@ jobs:
 
   build_amd64:
     uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_and_test_amd64.yml@ros2
+    secrets:
+      PRIVATE_PPA_TOKEN: ${{ secrets.PRIVATE_PPA_TOKEN }}
 
   build_arm64:
     uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_and_test_arm64.yml@ros2
+    secrets:
+      PRIVATE_PPA_TOKEN: ${{ secrets.PRIVATE_PPA_TOKEN }}

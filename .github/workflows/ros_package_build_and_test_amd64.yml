@@ -2,6 +2,9 @@ name: ros_package_build_and_test_amd64
 
 on:
   workflow_call:
+    secrets:
+      PRIVATE_PPA_TOKEN:
+        required: false
 
   workflow_dispatch:
 
@@ -16,6 +19,8 @@ jobs:
   build-job:
     runs-on: ubuntu-22.04
     timeout-minutes: 360 # 6 hour timeout
+    env:
+      PRIVATE_PPA_TOKEN: ${{ secrets.PRIVATE_PPA_TOKEN }}
     steps:
       - uses: actions/checkout@v6
         with:

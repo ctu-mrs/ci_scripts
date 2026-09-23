@@ -5,6 +5,8 @@ on:
     secrets:
       PUSH_TOKEN:
         required: true
+      PRIVATE_PPA_TOKEN:
+        required: false
 
   workflow_dispatch:
 
@@ -47,6 +49,8 @@ jobs:
     needs: init-artifacts
     runs-on: ubuntu-22.04-arm
     timeout-minutes: 360 # 6 hour timeout
+    env:
+      PRIVATE_PPA_TOKEN: ${{ secrets.PRIVATE_PPA_TOKEN }}
     steps:
       - name: Load artifacts
         uses: actions/download-artifact@v8

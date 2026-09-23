@@ -14,6 +14,8 @@ on:
     secrets:
       PUSH_TOKEN:
         required: true
+      PRIVATE_PPA_TOKEN:
+        required: false
       DOCKERHUB:
         required: true
 
@@ -25,11 +27,13 @@ jobs:
     uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_amd64.yml@ros2
     secrets:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+      PRIVATE_PPA_TOKEN: ${{ secrets.PRIVATE_PPA_TOKEN }}
 
   build_arm64:
     uses: ctu-mrs/ci_scripts/.github/workflows/ros_package_build_arm64.yml@ros2
     secrets:
       PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+      PRIVATE_PPA_TOKEN: ${{ secrets.PRIVATE_PPA_TOKEN }}
 
   build_docker:
     needs: [build_amd64, build_arm64]
