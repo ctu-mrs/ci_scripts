@@ -14,6 +14,7 @@ MY_PATH=`dirname "$0"`
 MY_PATH=`( cd "$MY_PATH" && pwd )`
 
 REPO_PATH=$MY_PATH/../..
+source $REPO_PATH/helpers/retry.sh
 
 cd $MY_PATH
 
@@ -47,7 +48,7 @@ echo "$0: pulling the base image"
 
 $REPO_PATH/helpers/wait_for_docker.sh
 
-docker pull $BASE_IMAGE
+retry 4 docker pull $BASE_IMAGE
 
 docker buildx use default
 

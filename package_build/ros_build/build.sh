@@ -10,6 +10,7 @@ MY_PATH=`dirname "$0"`
 MY_PATH=`( cd "$MY_PATH" && pwd )`
 
 REPO_PATH=$MY_PATH/../..
+source $REPO_PATH/helpers/retry.sh
 
 ## | -------------------------- args -------------------------- |
 
@@ -66,7 +67,7 @@ if ! $RUN_LOCALLY; then
 
   echo "$0: logging in to docker registry"
 
-  echo $PUSH_TOKEN | docker login ghcr.io -u ctumrsbot --password-stdin
+  echo $PUSH_TOKEN | retry 4 docker login ghcr.io -u ctumrsbot --password-stdin
 
 fi
 
@@ -76,7 +77,7 @@ echo "$0: loading cached builder docker image"
 
 if ! $RUN_LOCALLY; then
 
-  docker pull ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE
+  retry 4 docker pull ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE
   docker tag ghcr.io/ctu-mrs/$REPOSITORY_NAME:$DOCKER_IMAGE $DOCKER_IMAGE
 
 fi
