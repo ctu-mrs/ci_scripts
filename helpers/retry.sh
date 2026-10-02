@@ -15,15 +15,15 @@ retry() {
   shift
   local attempt=1
   local delay=1
+  local exit_code=0
 
   while true; do
-    if "$@"; then
-      return 0
-    fi
+    "$@" && return 0
+    exit_code=$?
 
     if (( attempt >= max_attempts )); then
       echo "retry: '$*' failed after $max_attempts attempts" >&2
-      return 1
+      return "$exit_code"
     fi
 
     echo "retry: '$*' failed (attempt $attempt/$max_attempts), retrying in ${delay}s..." >&2
