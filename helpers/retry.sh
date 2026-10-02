@@ -15,7 +15,7 @@ retry() {
   shift
   local attempt=1
   local delay=1
-  local exit_code=0
+  local exit_code
 
   while true; do
     "$@" && return 0
