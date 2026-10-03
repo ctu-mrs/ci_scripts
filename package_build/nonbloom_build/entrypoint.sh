@@ -13,11 +13,6 @@ cd "$REPO_FOLDER"
 
 git config --global --add safe.directory "$REPO_FOLDER"
 
-. /etc/docker/other_files/add_private_ppa.sh
-if [[ -n ${PRIVATE_PPA_TOKEN:-} ]]; then
-  apt-get update
-fi
-
 # call the build script within the clone repository
 ./.ci/build_package.sh ${ARTIFACTS_FOLDER} ${BASE_IMAGE}
 

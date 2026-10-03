@@ -17,7 +17,6 @@ echo "$0: installing dependencies using rosdep"
 
 git config --global --add safe.directory /etc/docker/workspace/src/repository
 
-. /etc/docker/workspace/add_private_ppa.sh
 apt-get update
 
 ## get up-to-date lists for resolving ROS package.xml depencies

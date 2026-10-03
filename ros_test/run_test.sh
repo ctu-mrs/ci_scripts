@@ -86,13 +86,11 @@ cp -r $SOURCES_PATH/. $WORKSPACE_FOLDER/src/repository
 ## | ----------------- copy the testing script ---------------- |
 
 cp $MY_PATH/entrypoint.sh $WORKSPACE_FOLDER/
-cp $REPO_PATH/helpers/add_private_ppa.sh $WORKSPACE_FOLDER/
 
 ## | ---------------------- run the test ---------------------- |
 
 docker run \
   --rm \
-  --env PRIVATE_PPA_TOKEN \
   -v $WORKSPACE_FOLDER:/etc/docker/workspace \
   $DOCKER_IMAGE \
   /bin/bash -c "/etc/docker/workspace/entrypoint.sh $REPOSITORY_NAME"
