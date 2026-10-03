@@ -86,7 +86,6 @@ mkdir -p /tmp/debs
 mkdir -p /tmp/other_files
 
 cp $MY_PATH/entrypoint.sh /tmp/other_files/entrypoint.sh
-cp $REPO_PATH/helpers/add_private_ppa.sh /tmp/other_files/add_private_ppa.sh
 
 ## | ---------------------- run the build --------------------- |
 
@@ -94,7 +93,6 @@ BASE_IMAGE_SHA=$(cat $ARTIFACTS_FOLDER/base_sha.txt)
 
 docker run \
   --rm \
-  --env PRIVATE_PPA_TOKEN \
   -v /tmp/repository:/etc/docker/repository \
   -v /tmp/debs:/etc/docker/debs \
   -v /tmp/other_files:/etc/docker/other_files \

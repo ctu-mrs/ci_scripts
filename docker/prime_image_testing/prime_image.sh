@@ -46,8 +46,21 @@ if ! $RUN_LOCALLY; then
 
 fi
 
-docker build . --file Dockerfile --build-arg BASE_IMAGE=${BASE_IMAGE} --build-arg PPA_VARIANT=${PPA_VARIANT} --tag ${OUTPUT_IMAGE} --progress plain
+cp $REPO_PATH/helpers/add_private_ppa.sh ./
+trap 'rm -f add_private_ppa.sh' EXIT
 
+PRIVATE_PPA_SECRET_ARG=()
+if [[ -n ${PRIVATE_PPA_TOKEN:-} ]]; then
+  PRIVATE_PPA_SECRET_ARG=(--secret id=PRIVATE_PPA_TOKEN,env=PRIVATE_PPA_TOKEN)
+fi
+
+docker build . --file Dockerfile \
+  --build-arg BASE_IMAGE=${BASE_IMAGE} \
+  --build-arg PPA_VARIANT=${PPA_VARIANT} \
+  "${PRIVATE_PPA_SECRET_ARG[@]}" \
+  --tag ${OUTPUT_IMAGE} --progress plain
+
+rm -f add_private_ppa.sh
 if ! $RUN_LOCALLY; then
 
   docker tag $OUTPUT_IMAGE ghcr.io/ctu-mrs/$REPOSITORY_NAME:$OUTPUT_IMAGE
