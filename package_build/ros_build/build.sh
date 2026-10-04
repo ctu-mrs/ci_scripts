@@ -89,7 +89,6 @@ mkdir -p /tmp/other_files
 
 cp $ARTIFACTS_FOLDER/base_sha.txt /tmp/other_files/base_sha.txt
 cp $MY_PATH/entrypoint.sh /tmp/other_files/entrypoint.sh
-cp $REPO_PATH/helpers/add_private_ppa.sh /tmp/other_files/add_private_ppa.sh
 
 $REPO_PATH/helpers/get_package_build_order.py /tmp/repository > /tmp/other_files/build_order.txt
 
@@ -102,7 +101,6 @@ echo "$0: "
 
 docker run \
   --rm \
-  --env PRIVATE_PPA_TOKEN \
   -v /tmp/repository:/etc/docker/repository \
   -v /tmp/debs:/etc/docker/debs \
   -v /tmp/other_files:/etc/docker/other_files \
