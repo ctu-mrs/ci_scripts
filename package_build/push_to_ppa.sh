@@ -22,11 +22,16 @@ ARTIFACTS=$(find $FROM_FOLDER -type f -name "*.deb")
 echo "$0: artifacts are:"
 echo $ARTIFACTS
 
+if [ -z "$(find "$FROM_FOLDER" -mindepth 1 2>/dev/null)" ]; then
+  echo "$0: No files in $FROM_FOLDER to deploy, nothing to do"
+  exit 0
+fi
+
 cd /tmp
 rm -rf ppa
 
 BRANCH=debs
-retry 4 git clone --branch $BRANCH https://$PUSH_TOKEN@$PPA ppa
+retry 4 git clone --depth 1 --branch $BRANCH https://$PUSH_TOKEN@$PPA ppa
 
 cd ppa
 
