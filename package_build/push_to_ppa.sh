@@ -5,7 +5,14 @@ set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 trap 'echo "$0: \"${last_command}\" command failed with exit code $?"' ERR
 
-PPA=github.com/ctu-mrs/ppa-$1.git
+# get the path to this script
+MY_PATH=`dirname "$0"`
+MY_PATH=`( cd "$MY_PATH" && pwd )`
+
+REPO_PATH=$MY_PATH/..
+source $REPO_PATH/helpers/retry.sh
+
+PPA=github.com/ctu-mrs/ppa-$1.git/
 FROM_FOLDER=$2
 
 echo "$0: Deploying debs from $2 package to $PPA"
@@ -18,13 +25,12 @@ echo $ARTIFACTS
 cd /tmp
 rm -rf ppa
 
-git clone https://$PUSH_TOKEN@$PPA ppa
+BRANCH=debs
+retry 4 git clone --branch $BRANCH https://$PUSH_TOKEN@$PPA ppa
 
 cd ppa
 
-BRANCH=debs
-git checkout $BRANCH
-
+git config http.https://github.com/.extraheader "AUTHORIZATION: basic $(printf "x-access-token:%s" "$PUSH_TOKEN" | base64 | tr -d '\r\n')"
 git config user.email github@github.com
 git config user.name github
 
@@ -79,10 +85,13 @@ if [ -n "$GIT_STATUS" ]; then
   git commit -m "Added new deb packages"
 
   # the upstream might have changed in the meantime, try to merge it first
-  git fetch
-  git merge origin/$BRANCH
+  push_ppa() {
+    git fetch origin $BRANCH
+    git merge --no-edit origin/$BRANCH || { git merge --abort 2>/dev/null || true; return 1; }
+    git push origin $BRANCH
+  }
 
-  git push
+  retry 4 push_ppa
 
   echo "$0: Package deployed to $PPA"
 
