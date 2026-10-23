@@ -47,7 +47,7 @@ jobs:
     steps:
       - name: Wait for PPA
         if: ${{ inputs.wait_for_ppa }}
-        run: sleep 300
+        run: sleep 180
 
       - uses: actions/checkout@v6
         with:
