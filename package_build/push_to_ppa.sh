@@ -92,7 +92,7 @@ if [ -n "$GIT_STATUS" ]; then
   # the upstream might have changed in the meantime, try to merge it first
   push_ppa() {
     git fetch origin $BRANCH
-    git merge --no-edit origin/$BRANCH || { git merge --abort 2>/dev/null || true; return 1; }
+    git merge --no-edit -X ours origin/$BRANCH || { git merge --abort 2>/dev/null || true; return 1; }
     git push origin $BRANCH
   }
 
