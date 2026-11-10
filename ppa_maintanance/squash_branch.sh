@@ -14,8 +14,8 @@ git clone --depth 1 --branch $BRANCH https://$PUSH_TOKEN@$PPA repo
 cd repo
 
 git config http.https://github.com/.extraheader "AUTHORIZATION: basic $(printf "x-access-token:%s" "$PUSH_TOKEN" | base64 | tr -d '\r\n')"
-git config user.email github@github.com
-git config user.name github
+git config user.name "cturmrsbot"
+git config user.email "154206578+cturmrsbot@users.noreply.github.com"
 
 git checkout --orphan temp
 git commit -m "Updated packages (squashed)"
